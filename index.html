@@ -182,55 +182,50 @@ window.onload = function () {
     let prazo = "";
 
     if (problema.includes("bateria")) {
-      diagnostico = "A bateria do seu iPhone apresenta desgaste natural ou falha.";
-      valor = "R$ 250 - R$ 550";
-      prazo = "60 a 120 minutos";
+    diagnostico = "A bateria do seu iPhone apresenta desgaste natural ou falha, causando descarregamento rápido ou desligamentos inesperados. A substituição resolve o problema e melhora o desempenho do aparelho.";
+    valor = "R$ 250 - R$ 550";
+    prazo = "60 a 120 minutos";
 
-    } else if (problema.includes("tela")) {
-      diagnostico = "A tela está danificada e precisa ser substituída.";
-      valor = "R$ 250 - R$ 1350";
-      prazo = "60 a 120 minutos";
+  } else if (problema.includes("tela")) {
+    diagnostico = "A tela está danificada ou não responde corretamente ao toque. É necessário substituir o display para restaurar a imagem e o funcionamento normal.";
+    valor = "R$ 250 - R$ 1350";
+    prazo = "60 a 120 minutos";
 
-    } else if (problema.includes("Não liga")) {
-      diagnostico = "Seu iPhone não está ligando e precisa de análise técnica.";
-      valor = "R$ 300 - R$ 900";
-      prazo = "1 a 3 dias";
+  } else if (problema.includes("Não liga")) {
+    diagnostico = "Seu iPhone não está ligando. Isso pode estar relacionado à bateria, sistema de carregamento ou até mesmo Curto-circuito na Placa Mãe. Realizamos testes para identificar a causa exata e resolver com segurança.";
+    valor = "R$ 300 - R$ 900";
+    prazo = "1 a 3 dias";
 
-    } else if (problema.includes("Sem sinal")) {
-      diagnostico = "O aparelho não está reconhecendo sinal.";
-      valor = "R$ 250 - R$ 600";
-      prazo = "1 a 2 dias";
+  } else if (problema.includes("Sem sinal")) {
+    diagnostico = "O aparelho não está reconhecendo sinal de rede. Isso pode estar relacionado a configurações, componentes internos ou ate mesmo defeito na Placa Mãe. É necessário diagnóstico para identificar a causa.";
+    valor = "R$ 250 - R$ 600";
+    prazo = "1 a 2 dias";
 
-    } else if (problema.includes("WI-FI")) {
-      diagnostico = "Problema no Wi-Fi, pode ser configuração ou hardware.";
-      valor = "R$ 250 - R$ 600";
-      prazo = "1 a 2 dias";
+  } else if (problema.includes("molhado")) {
+    diagnostico = "O aparelho teve contato com líquido, o que pode causar falhas progressivas ou imediatas. É essencial realizar limpeza interna e análise completa para evitar danos maiores.";
+    valor = "R$ 150 - R$ 600";
+    prazo = "1 a 3 dias";
 
-    } else if (problema.includes("molhado")) {
-      diagnostico = "O aparelho teve contato com líquido e precisa de limpeza interna.";
-      valor = "R$ 150 - R$ 600";
-      prazo = "1 a 3 dias";
+  } else if (problema.includes("Face ID")) {
+    diagnostico = "O Face ID não está funcionando corretamente. Pode estar relacionado a sensores ou componentes internos. Realizamos análise completa para identificar e corrigir o problema.";
+    valor = "R$ 300 - R$ 800";
+    prazo = "1 a 2 dias";
 
-    } else if (problema.includes("Face ID")) {
-      diagnostico = "O Face ID não está funcionando corretamente.";
-      valor = "R$ 300 - R$ 800";
-      prazo = "1 a 2 dias";
+  } else if (problema.includes("carrega")) {
+    diagnostico = "O iPhone apresenta falha ao carregar ou conexão instável. Pode estar relacionado ao conector de carga ou até mesmo defeito na Placa Mãe. E necessária uma análise mais aprofundada.";
+    valor = "R$ 250 - R$ 500";
+    prazo = "1 dia";
 
-    } else if (problema.includes("carrega")) {
-      diagnostico = "O iPhone apresenta falha ao carregar.";
-      valor = "R$ 250 - R$ 500";
-      prazo = "1 dia";
+  } else if (problema.includes("câmera")) {
+    diagnostico = "A câmera apresenta falhas, como imagem embaçada ou sem funcionamento. Pode ser necessário substituir o componente.";
+    valor = "R$ 250 - R$ 700";
+    prazo = "1 dia";
 
-    } else if (problema.includes("câmera")) {
-      diagnostico = "A câmera apresenta falhas.";
-      valor = "R$ 250 - R$ 700";
-      prazo = "1 dia";
-
-    } else if (problema.includes("Alto")) {
-      diagnostico = "O som do aparelho está com falha.";
-      valor = "R$ 150 - R$ 350";
-      prazo = "1 dia";
-    }
+  } else if (problema.includes("Alto")) {
+    diagnostico = "O som do aparelho está baixo, falhando ou sem funcionar. Pode ser necessário realizar limpeza ou substituição do alto-falante.";
+    valor = "R$ 150 - R$ 350";
+    prazo = "1 dia";
+  }
 
     const mensagem = `Olá, fiz um diagnóstico no Alpha System:
 
