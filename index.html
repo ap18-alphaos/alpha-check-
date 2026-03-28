@@ -62,12 +62,26 @@
       text-decoration: none;
       font-weight: bold;
     }
+    .erro {
+      color: #ff4d4d;
+      font-size: 12px;
+      margin-top: 5px;
+      display: none;
+    }
   </style>
 </head>
 <body>
 
 <div class="container">
   <h1>Alpha System</h1>
+
+  <label>Seu nome</label>
+  <input type="text" id="nome" placeholder="Digite seu nome">
+
+  <label>WhatsApp</label>
+  <input type="text" id="telefone" placeholder="(55) 99999-9999">
+
+  <div class="erro" id="erro">Preencha nome e WhatsApp</div>
 
   <label>Modelo do iPhone</label>
   <select id="modelo">
@@ -147,6 +161,18 @@ window.onload = function () {
   verificarProblema();
 
   window.gerarDiagnostico = function () {
+
+    const nome = document.getElementById('nome').value.trim();
+    const telefone = document.getElementById('telefone').value.trim();
+    const erro = document.getElementById('erro');
+
+    if (!nome || !telefone) {
+      erro.style.display = "block";
+      return;
+    } else {
+      erro.style.display = "none";
+    }
+
     const modelo = document.getElementById('modelo').value;
     const problema = document.getElementById('problema').value;
     const tempo = document.getElementById('tempo').value;
@@ -156,32 +182,32 @@ window.onload = function () {
     let prazo = "";
 
     if (problema.includes("bateria")) {
-      diagnostico = "A bateria do seu iPhone apresenta desgaste natural ou falha, causando descarregamento rápido ou desligamentos inesperados.";
+      diagnostico = "A bateria do seu iPhone apresenta desgaste natural ou falha.";
       valor = "R$ 250 - R$ 550";
       prazo = "60 a 120 minutos";
 
     } else if (problema.includes("tela")) {
-      diagnostico = "A tela está danificada ou não responde corretamente ao toque. É necessário substituir o display.";
+      diagnostico = "A tela está danificada e precisa ser substituída.";
       valor = "R$ 250 - R$ 1350";
       prazo = "60 a 120 minutos";
 
     } else if (problema.includes("Não liga")) {
-      diagnostico = "Seu iPhone não está ligando. Pode estar relacionado à bateria ou componentes internos.";
+      diagnostico = "Seu iPhone não está ligando e precisa de análise técnica.";
       valor = "R$ 300 - R$ 900";
       prazo = "1 a 3 dias";
 
     } else if (problema.includes("Sem sinal")) {
-      diagnostico = "O aparelho não está reconhecendo sinal de rede.";
+      diagnostico = "O aparelho não está reconhecendo sinal.";
       valor = "R$ 250 - R$ 600";
       prazo = "1 a 2 dias";
 
     } else if (problema.includes("WI-FI")) {
-      diagnostico = "O Wi-Fi não está funcionando corretamente. Pode estar relacionado a configurações ou componentes internos.";
+      diagnostico = "Problema no Wi-Fi, pode ser configuração ou hardware.";
       valor = "R$ 250 - R$ 600";
       prazo = "1 a 2 dias";
 
     } else if (problema.includes("molhado")) {
-      diagnostico = "O aparelho teve contato com líquido e precisa de limpeza interna e análise completa.";
+      diagnostico = "O aparelho teve contato com líquido e precisa de limpeza interna.";
       valor = "R$ 150 - R$ 600";
       prazo = "1 a 3 dias";
 
@@ -207,6 +233,9 @@ window.onload = function () {
     }
 
     const mensagem = `Olá, fiz um diagnóstico no Alpha System:
+
+Nome: ${nome}
+Telefone: ${telefone}
 
 Modelo: ${modelo}
 Problema: ${problema}
