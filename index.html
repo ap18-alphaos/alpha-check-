@@ -1,252 +1,252 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Alpha System</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #0a0a0a;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      background: #111;
-      padding: 30px;
-      border-radius: 20px;
-      width: 100%;
-      max-width: 400px;
-      box-shadow: 0 0 30px rgba(0, 140, 255, 0.3);
-    }
-    h1 {
-      text-align: center;
-      color: #00aaff;
-    }
-    select, input, button {
-      width: 100%;
-      margin-top: 10px;
-      padding: 12px;
-      border-radius: 10px;
-      border: none;
-      font-size: 14px;
-    }
-    button {
-      background: #00aaff;
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    button:hover {
-      opacity: 0.9;
-    }
-    .result {
-      margin-top: 20px;
-      background: #000;
-      padding: 15px;
-      border-radius: 10px;
-      display: none;
-    }
-    a.whatsapp {
-      display: block;
-      margin-top: 10px;
-      text-align: center;
-      background: #25D366;
-      padding: 12px;
-      border-radius: 10px;
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .erro {
-      color: #ff4d4d;
-      font-size: 12px;
-      margin-top: 5px;
-      display: none;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Alpha System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+background: #0a0a0a;
+color: white;
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh;
+margin: 0;
+}
+.container {
+background: #111;
+padding: 30px;
+border-radius: 20px;
+width: 100%;
+max-width: 400px;
+box-shadow: 0 0 30px rgba(0, 140, 255, 0.3);
+}
+h1 {
+text-align: center;
+color: #00aaff;
+}
+select, input, button {
+width: 100%;
+margin-top: 10px;
+padding: 12px;
+border-radius: 10px;
+border: none;
+font-size: 14px;
+}
+button {
+background: #00aaff;
+color: white;
+cursor: pointer;
+font-weight: bold;
+}
+button:hover {
+opacity: 0.9;
+}
+.result {
+margin-top: 20px;
+background: #000;
+padding: 15px;
+border-radius: 10px;
+display: none;
+}
+a.whatsapp {
+display: block;
+margin-top: 10px;
+text-align: center;
+background: #25D366;
+padding: 12px;
+border-radius: 10px;
+color: white;
+text-decoration: none;
+font-weight: bold;
+}
+.erro {
+color: #ff4d4d;
+font-size: 12px;
+margin-top: 5px;
+display: none;
+}
+</style>
 </head>
 <body>
 
 <div class="container">
-  <h1>Alpha System</h1>
+<h1>Alpha System</h1>
 
-  <label>Seu nome</label>
-  <input type="text" id="nome" placeholder="Digite seu nome">
+<label>Seu nome</label>
+<input type="text" id="nome" placeholder="Digite seu nome">
 
-  <label>WhatsApp</label>
-  <input type="text" id="telefone" placeholder="(55) 99999-9999">
+<label>WhatsApp</label>
+<input type="text" id="telefone" placeholder="(55) 99999-9999">
 
-  <div class="erro" id="erro">Preencha nome e WhatsApp</div>
+<div class="erro" id="erro">Preencha nome e WhatsApp</div>
 
-  <label>Modelo do iPhone</label>
-  <select id="modelo">
-    <option>iPhone SE</option>
-    <option>iPhone XR</option>
-    <option>iPhone X/XS</option>
-    <option>iPhone 11</option>
-    <option>iPhone 11 Pro</option>
-    <option>iPhone 11 Pro Max</option>
-    <option>iPhone 12</option>
-    <option>iPhone 12 Pro</option>
-    <option>iPhone 12 Pro Max</option>
-    <option>iPhone 13</option>
-    <option>iPhone 13 Pro</option>
-    <option>iPhone 13 Pro Max</option>
-    <option>iPhone 14</option>
-    <option>iPhone 14 Pro</option>
-    <option>iPhone 14 Pro Max</option>
-    <option>iPhone 15</option>
-    <option>iPhone 15 Pro</option>
-    <option>iPhone 15 Pro Max</option>
-    <option>iPhone 16</option>
-    <option>iPhone 16 Pro</option>
-    <option>iPhone 16 Pro Max</option>
-  </select>
+<label>Modelo do iPhone</label>
+<select id="modelo">
+<option>iPhone SE</option>
+<option>iPhone XR</option>
+<option>iPhone X/XS</option>
+<option>iPhone 11</option>
+<option>iPhone 11 Pro</option>
+<option>iPhone 11 Pro Max</option>
+<option>iPhone 12</option>
+<option>iPhone 12 Pro</option>
+<option>iPhone 12 Pro Max</option>
+<option>iPhone 13</option>
+<option>iPhone 13 Pro</option>
+<option>iPhone 13 Pro Max</option>
+<option>iPhone 14</option>
+<option>iPhone 14 Pro</option>
+<option>iPhone 14 Pro Max</option>
+<option>iPhone 15</option>
+<option>iPhone 15 Pro</option>
+<option>iPhone 15 Pro Max</option>
+<option>iPhone 16</option>
+<option>iPhone 16 Pro</option>
+<option>iPhone 16 Pro Max</option>
+</select>
 
-  <label>Problema</label>
-  <select id="problema">
-    <option>Troca de bateria</option>
-    <option>Troca de tela</option>
-    <option>Não liga</option>
-    <option>Sem sinal</option>
-    <option>Sem WI-FI</option>
-    <option>iPhone molhado</option>
-    <option>Face ID não funciona</option>
-    <option>Não carrega</option>
-    <option>Problema na câmera</option>
-    <option>Alto-falante sem som</option>
-  </select>
+<label>Problema</label>
+<select id="problema">
+<option>Troca de bateria</option>
+<option>Troca de tela</option>
+<option>Não liga</option>
+<option>Sem sinal</option>
+<option>Sem WI-FI</option>
+<option>iPhone molhado</option>
+<option>Face ID não funciona</option>
+<option>Não carrega</option>
+<option>Problema na câmera</option>
+<option>Alto-falante sem som</option>
+</select>
 
-  <div id="campoTempo">
-    <label>Há quanto tempo começou? (Em caso de defeitos)</label>
-    <input type="text" id="tempo" placeholder="Ex: 2 dias, 1 semana">
-  </div>
+<div id="campoTempo">
+<label>Há quanto tempo começou? (Em caso de defeitos)</label>
+<input type="text" id="tempo" placeholder="Ex: 2 dias, 1 semana">
+</div>
 
-  <button onclick="gerarDiagnostico()">Gerar diagnóstico</button>
+<button onclick="gerarDiagnostico()">Gerar diagnóstico</button>
 
-  <div class="result" id="resultado"></div>
+<div class="result" id="resultado"></div>
 </div>
 
 <script>
 window.onload = function () {
 
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYVp0UBoKy9eiPNdUePPsUZr-i2aIm9qL4NYgBwVvb8ictv3Umkdy5K4dOd73KlAFg/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYVp0UBoKy9eiPNdUePPsUZr-i2aIm9qL4NYgBwVvb8ictv3Umkdy5K4dOd73KlAFg/exec";
 
-  const problemaSelect = document.getElementById('problema');
-  const campoTempo = document.getElementById('campoTempo');
+const problemaSelect = document.getElementById('problema');
+const campoTempo = document.getElementById('campoTempo');
 
-  function verificarProblema() {
-    const problema = problemaSelect.value;
+function verificarProblema() {
+const problema = problemaSelect.value;
 
-    if (
-      problema.includes("Não liga") ||
-      problema.includes("Sem sinal") ||
-      problema.includes("WI-FI") ||
-      problema.includes("Face ID") ||
-      problema.includes("molhado") ||
-      problema.includes("carrega") ||
-      problema.includes("câmera") ||
-      problema.includes("Alto")
-    ) {
-      campoTempo.style.display = "block";
-    } else {
-      campoTempo.style.display = "none";
-    }
-  }
+if (
+problema.includes("Não liga") ||
+problema.includes("Sem sinal") ||
+problema.includes("WI-FI") ||
+problema.includes("Face ID") ||
+problema.includes("molhado") ||
+problema.includes("carrega") ||
+problema.includes("câmera") ||
+problema.includes("Alto")
+) {
+campoTempo.style.display = "block";
+} else {
+campoTempo.style.display = "none";
+}
+}
 
-  problemaSelect.addEventListener('change', verificarProblema);
-  verificarProblema();
+problemaSelect.addEventListener('change', verificarProblema);
+verificarProblema();
 
-  window.gerarDiagnostico = function () {
+window.gerarDiagnostico = function () {
 
-    const nome = document.getElementById('nome').value.trim();
-    const telefone = document.getElementById('telefone').value.trim();
-    const erro = document.getElementById('erro');
+const nome = document.getElementById('nome').value.trim();
+const telefone = document.getElementById('telefone').value.trim();
+const erro = document.getElementById('erro');
 
-    if (!nome || !telefone) {
-      erro.style.display = "block";
-      return;
-    } else {
-      erro.style.display = "none";
-    }
+if (!nome || !telefone) {
+erro.style.display = "block";
+return;
+} else {
+erro.style.display = "none";
+}
 
-    const modelo = document.getElementById('modelo').value;
-    const problema = document.getElementById('problema').value;
-    const tempo = document.getElementById('tempo').value;
+const modelo = document.getElementById('modelo').value;
+const problema = document.getElementById('problema').value;
+const tempo = document.getElementById('tempo').value;
 
-    let diagnostico = "";
-    let valor = "";
-    let prazo = "";
+let diagnostico = "";
+let valor = "";
+let prazo = "";
 
-    if (problema.includes("bateria")) {
-      diagnostico = "A bateria do seu iPhone apresenta desgaste natural ou falha.";
-      valor = "R$ 250 - R$ 550";
-      prazo = "60 a 120 minutos";
+if (problema.includes("bateria")) {
+diagnostico = "A bateria do seu iPhone apresenta desgaste natural ou falha, causando descarregamento rápido ou desligamentos inesperados. A substituição resolve o problema e melhora o desempenho do aparelho.";
+valor = "R$ 250 - R$ 550";
+prazo = "60 a 120 minutos";
 
-    } else if (problema.includes("tela")) {
-      diagnostico = "A tela está danificada e precisa ser substituída.";
-      valor = "R$ 250 - R$ 1350";
-      prazo = "60 a 120 minutos";
+} else if (problema.includes("tela")) {
+diagnostico = "A tela está danificada ou não responde corretamente ao toque. É necessário substituir o display para restaurar a imagem e o funcionamento normal.";
+valor = "R$ 250 - R$ 1350";
+prazo = "60 a 120 minutos";
 
-    } else if (problema.includes("Não liga")) {
-      diagnostico = "Seu iPhone não está ligando e precisa de análise técnica.";
-      valor = "R$ 300 - R$ 900";
-      prazo = "1 a 3 dias";
+} else if (problema.includes("Não liga")) {
+diagnostico = "Seu iPhone não está ligando. Isso pode estar relacionado à bateria, sistema de carregamento ou até mesmo Curto-circuito na Placa Mãe. Realizamos testes para identificar a causa exata e resolver com segurança.";
+valor = "R$ 300 - R$ 900";
+prazo = "1 a 3 dias";
 
-    } else if (problema.includes("Sem sinal")) {
-      diagnostico = "O aparelho não está reconhecendo sinal.";
-      valor = "R$ 250 - R$ 600";
-      prazo = "1 a 2 dias";
+} else if (problema.includes("Sem sinal")) {
+diagnostico = "O aparelho não está reconhecendo sinal de rede. Isso pode estar relacionado a configurações, componentes internos ou ate mesmo defeito na Placa Mãe. É necessária análise mais aprofundada para identificar a causa.";
+valor = "R$ 250 - R$ 600";
+prazo = "1 a 2 dias";
 
-    } else if (problema.includes("WI-FI")) {
-      diagnostico = "Problema no Wi-Fi.";
-      valor = "R$ 250 - R$ 600";
-      prazo = "1 a 2 dias";
+} else if (problema.includes("WI-FI")) {
+diagnostico = "Problema no Wi-Fi, pode ser configuração, Bug de Atualização ou Defeito na Placa Mãe, é necessária análise mais aprofundada para identificar a causa.";
+valor = "R$ 250 - R$ 600";
+prazo = "1 a 2 dias";
 
-    } else if (problema.includes("molhado")) {
-      diagnostico = "O aparelho teve contato com líquido e precisa de limpeza interna.";
-      valor = "R$ 150 - R$ 600";
-      prazo = "1 a 3 dias";
+} else if (problema.includes("molhado")) {
+diagnostico = "O aparelho teve contato com líquido, o que pode causar falhas progressivas ou imediatas. É essencial realizar limpeza interna e análise completa para evitar danos maiores.";
+valor = "R$ 150 - R$ 600";
+prazo = "1 a 3 dias";
 
-    } else if (problema.includes("Face ID")) {
-      diagnostico = "O Face ID não está funcionando corretamente.";
-      valor = "R$ 300 - R$ 800";
-      prazo = "1 a 2 dias";
+} else if (problema.includes("Face ID")) {
+diagnostico = "O Face ID não está funcionando corretamente. Pode estar relacionado a sensores ou componentes internos. Realizamos análise completa para identificar e corrigir o problema.";
+valor = "R$ 300 - R$ 800";
+prazo = "1 a 2 dias";
 
-    } else if (problema.includes("carrega")) {
-      diagnostico = "O iPhone apresenta falha ao carregar.";
-      valor = "R$ 250 - R$ 500";
-      prazo = "1 dia";
+} else if (problema.includes("carrega")) {
+diagnostico = "O iPhone apresenta falha ao carregar ou conexão instável. Pode estar relacionado ao conector de carga ou até mesmo defeito na Placa Mãe. É necessária uma análise mais aprofundada.";
+valor = "R$ 250 - R$ 500";
+prazo = "1 dia";
 
-    } else if (problema.includes("câmera")) {
-      diagnostico = "A câmera apresenta falhas.";
-      valor = "R$ 250 - R$ 700";
-      prazo = "1 dia";
+} else if (problema.includes("câmera")) {
+diagnostico = "A câmera apresenta falhas, como imagem embaçada ou sem funcionamento. Pode ser necessário substituir o componente.";
+valor = "R$ 250 - R$ 700";
+prazo = "1 dia";
 
-    } else if (problema.includes("Alto")) {
-      diagnostico = "O som do aparelho está com falha.";
-      valor = "R$ 150 - R$ 350";
-      prazo = "1 dia";
-    }
+} else if (problema.includes("Alto")) {
+diagnostico = "O som do aparelho está baixo, falhando ou sem funcionar. Pode ser necessário realizar limpeza ou substituição do alto-falante.";
+valor = "R$ 150 - R$ 350";
+prazo = "1 dia";
+}
 
-    // 🔥 ENVIO PARA PLANILHA
-    fetch(SCRIPT_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        nome,
-        telefone,
-        modelo,
-        problema,
-        diagnostico
-      })
-    });
+// 🔥 SALVAR NA PLANILHA
+fetch(SCRIPT_URL, {
+method: "POST",
+body: JSON.stringify({
+nome,
+telefone,
+modelo,
+problema,
+diagnostico
+})
+});
 
-    const mensagem = `Olá, fiz um diagnóstico no Alpha System:
+const mensagem = `Olá, fiz um diagnóstico no Alpha System:
 
 Nome: ${nome}
 Telefone: ${telefone}
@@ -259,17 +259,17 @@ Diagnóstico: ${diagnostico}
 Valor estimado: ${valor}
 Prazo: ${prazo}`;
 
-    const link = `https://wa.me/55991269300?text=${encodeURIComponent(mensagem)}`;
+const link = `https://wa.me/55991269300?text=${encodeURIComponent(mensagem)}`;
 
-    const resultado = document.getElementById('resultado');
-    resultado.style.display = "block";
-    resultado.innerHTML = `
-      <strong>Diagnóstico:</strong> ${diagnostico}<br>
-      <strong>Valor:</strong> ${valor}<br>
-      <strong>Prazo:</strong> ${prazo}
-      <a class="whatsapp" href="${link}" target="_blank">Falar no WhatsApp</a>
-    `;
-  };
+const resultado = document.getElementById('resultado');
+resultado.style.display = "block";
+resultado.innerHTML = `
+<strong>Diagnóstico:</strong> ${diagnostico}<br>
+<strong>Valor:</strong> ${valor}<br>
+<strong>Prazo:</strong> ${prazo}
+<a class="whatsapp" href="${link}" target="_blank">Falar no WhatsApp</a>
+`;
+};
 
 };
 </script>
