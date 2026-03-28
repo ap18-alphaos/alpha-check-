@@ -73,19 +73,25 @@
   <select id="modelo">
   <option>iPhone SE</option>
   <option>iPhone XR</option>
-  <option>iPhone XS</option>
+  <option>iPhone X/XS</option>
   <option>iPhone 11</option>
-  <option>iPhone 11 Pro</option> 
+  <option>iPhone 11 Pro</option>
+  <option>iPhone 11 Pro Max</option>  
   <option>iPhone 12</option>
   <option>iPhone 12 Pro</option>
+  <option>iPhone 12 Pro Max</option>   
   <option>iPhone 13</option>
   <option>iPhone 13 Pro</option>
+  <option>iPhone 13 Pro Max</option>  
   <option>iPhone 14</option>
   <option>iPhone 14 Pro</option>
+  <option>iPhone 14 Pro Max</option>  
   <option>iPhone 15</option>
   <option>iPhone 15 Pro</option>
+  <option>iPhone 15 Pro Max</option>  
   <option>iPhone 16</option>
   <option>iPhone 16 Pro</option>
+  <option>iPhone 16 Pro Max</option>  
 </select>
 
 <select id="problema">
@@ -93,8 +99,9 @@
   <option>Troca de tela</option>
   <option>Não liga</option>
   <option>Sem sinal</option>
+  <option>Sem WI-FI</option>
   <option>Face ID não funciona</option>
-  <option>Problema no conector de carga</option>
+  <option>Não carrega</option>
   <option>Problema na câmera</option>
   <option>Alto-falante sem som</option>
 </select>
@@ -119,57 +126,94 @@ function gerarDiagnostico() {
 
   // 💰 TABELA DE PREÇOS (você pode ajustar depois)
   const precos = {
-    "Troca de tela": {
+    "Troca de tela Premium": {
+      "iPhone 8 - 8 Plus": 250 - 300,
+      "iPhone X/XS/XS Max": 380 - 450,
+      "iPhone XR": 380,
       "iPhone 11": 450,
-      "iPhone 12": 600,
-      "iPhone 13": 800,
-      "iPhone 14": 100,
-      "iPhone 15": 1200
+      "iPhone 11 Pro": 550,
+      "iPhone 11 Pro Max": 650,
+      "iPhone 12": 650,
+      "iPhone 12 Pro": 650,
+      "iPhone 12 Pro Max": 750,
+      "iPhone 13": 700,
+      "iPhone 13 Pro": 800,
+      "iPhone 13 Pro Max": 900,
+      "iPhone 14": 750,
+      "iPhone 14 Pro": 000,
+      "iPhone 14 Pro Max": 000,
+      "iPhone 15": 000,
+      "iPhone 15 Pro": 000,
+      "iPhone 15 Pro Max": 000,
+      "iPhone 16": 1.350,
+      "iPhone 16 Pro": 000,
+      "iPhone 16 Pro Max": 000,
     },
     "Troca de bateria": {
+      "iPhone 8 - 8 Plus": 200,
+      "iPhone X/XS/XS Max": 250 - 300,
+      "iPhone XR": 250,
       "iPhone 11": 300,
-      "iPhone 12": 350,
-      "iPhone 13": 400,
-      "iPhone 14": 450,
-      "iPhone 15": 450,
+      "iPhone 11 Pro": 380,
+      "iPhone 11 Pro Max": 400,
+      "iPhone 12": 350 - 450,
+      "iPhone 12 Pro": 370 - 470,
+      "iPhone 12 Pro Max": 400 - 500,
+      "iPhone 13": 400 - 500,
+      "iPhone 13 Pro": 450 - 550,
+      "iPhone 13 Pro Max": 450 - 550,
+      "iPhone 14": 400 - 500,
+      "iPhone 14 Pro": 400 - 500,
+      "iPhone 14 Pro Max": 400 - 550,
+      "iPhone 15": 400 - 500,
+      "iPhone 15 Pro": 400 - 550,
+      "iPhone 15 Pro Max": 400 - 550,
+      "iPhone 16": 450,
+      "iPhone 16 Pro": 500,
+      "iPhone 16 Pro Max": 550,
     }
   };
 
   if (problema.includes("bateria")) {
-    diagnostico = "Substituição de bateria recomendada.";
-    valor = `R$ ${precos["Troca de bateria"][modelo] || 300}`;
-    prazo = "30 a 60 minutos";
+  diagnostico = "A bateria do seu iPhone apresenta desgaste natural ou falha, causando descarregamento rápido ou desligamentos inesperados. A substituição resolve o problema e melhora o desempenho do aparelho.";
+  valor = "R$ 250 - R$ 550";
+  prazo = "60 a 120 minutos";
 
-  } else if (problema.includes("tela")) {
-    diagnostico = "Necessária troca de display.";
-    valor = `R$ ${precos["Troca de tela"][modelo] || 800}`;
-    prazo = "40 minutos";
+} else if (problema.includes("tela")) {
+  diagnostico = "A tela está danificada ou não responde corretamente ao toque. É necessário substituir o display para restaurar a imagem e o funcionamento normal.";
+  valor = "R$ 250 - R$ 1350";
+  prazo = "60 a 120 minutos";
 
-  } else if (problema.includes("Face ID")) {
-    diagnostico = "Falha em sensores do Face ID ou flex.";
-    valor = "R$ 300 - R$ 800";
-    prazo = "1 a 2 dias";
+} else if (problema.includes("Não liga")) {
+  diagnostico = "Seu iPhone não está ligando. Isso pode estar relacionado à bateria, sistema de carregamento ou até mesmo Curto Circuito na Placa Mãe. Realizamos testes para identificar a causa exata e resolver com segurança.";
+  valor = "R$ 300 - R$ 900";
+  prazo = "1 a 3 dias";
 
-  } else if (problema.includes("Não liga")) {
-    diagnostico = "Possível falha em placa lógica ou bateria.";
-    valor = "R$ 300 - R$ 900";
-    prazo = "1 a 3 dias";
+} else if (problema.includes("Sem sinal")) {
+  diagnostico = "O aparelho não está reconhecendo sinal de rede. Isso pode estar reslacionado a configurações, componentes internos (como antenas) ou até mesmo a Placa Mãe. É necessário diagnóstico para identificar a causa.";
+  valor = "R$ 250 - R$ 600";
+  prazo = "1 a 2 dias";
 
-  } else if (problema.includes("carga")) {
-    diagnostico = "Possível falha no conector ou circuito de carga.";
-    valor = "R$ 200 - R$ 500";
-    prazo = "1 dia";
+} else if (problema.includes("Face ID")) {
+  diagnostico = "O Face ID não está funcionando corretamente. Pode estar relacionado a sensores ou componentes internos. Realizamos análise completa para identificar e corrigir o problema.";
+  valor = "R$ 300 - R$ 800";
+  prazo = "1 a 2 dias";
 
-  } else if (problema.includes("câmera")) {
-    diagnostico = "Problema no módulo de câmera.";
-    valor = "R$ 250 - R$ 700";
-    prazo = "1 dia";
+} else if (problema.includes("carga")) {
+  diagnostico = "O iPhone apresenta falha ao carregar ou conexão instável. Pode estar relacionado ao conector de carga, componentes internos ou até mesmo à Placa Mãe. A correção é feita após diagnóstico técnico.";
+  valor = "R$ 250 - R$ 500";
+  prazo = "1 dia";
 
-  } else if (problema.includes("Alto")) {
-    diagnostico = "Falha no alto-falante.";
-    valor = "R$ 150 - R$ 350";
-    prazo = "1 dia";
-  }
+} else if (problema.includes("câmera")) {
+  diagnostico = "A câmera apresenta falhas, como imagem embaçada, tremida ou sem funcionamento. Pode ser necessário substituir a câmera para restaurar a qualidade das fotos.";
+  valor = "R$ 250 - R$ 700";
+  prazo = "1 dia";
+
+} else if (problema.includes("Alto")) {
+  diagnostico = "O som do aparelho está baixo, falhando ou sem funcionar. Pode ser necessário realizar limpeza ou substituição do alto-falante.";
+  valor = "R$ 150 - R$ 350";
+  prazo = "1 dia";
+}
 
   const mensagem = `Olá, fiz um diagnóstico no Alpha Check:
 
