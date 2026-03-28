@@ -101,14 +101,17 @@
   <option>Não liga</option>
   <option>Sem sinal</option>
   <option>Sem WI-FI</option>
+  <option>iPhone molhado</option>
   <option>Face ID não funciona</option>
   <option>Não carrega</option>
   <option>Problema na câmera</option>
   <option>Alto-falante sem som</option>
 </select>
 
-  <label>Há quanto tempo começou?</label>
+  <div id="campoTempo">
+  <label>Há quanto tempo começou? (Em caso de defeitos)</label>
   <input type="text" id="tempo" placeholder="Ex: 2 dias, 1 semana">
+</div>
 
   <button onclick="gerarDiagnostico()">Gerar diagnóstico</button>
 
@@ -116,6 +119,33 @@
 </div>
 
 <script>
+  const problemaSelect = document.getElementById('problema');
+const campoTempo = document.getElementById('campoTempo');
+
+function verificarProblema() {
+  const problema = problemaSelect.value;
+
+  if (
+    problema.includes("Não liga") ||
+    problema.includes("Sem sinal") ||
+    problema.includes("Face ID") ||
+    problema.includes("molhado") ||
+    problema.includes("carga") ||
+    problema.includes("câmera") ||
+    problema.includes("Alto")
+  ) {
+    campoTempo.style.display = "block";
+  } else {
+    campoTempo.style.display = "none";
+  }
+}
+
+// Executa ao mudar o problema
+problemaSelect.addEventListener('change', verificarProblema);
+
+// Executa ao carregar a página
+window.onload = verificarProblema;
+  
 function gerarDiagnostico() {
   const modelo = document.getElementById('modelo').value;
   const problema = document.getElementById('problema').value;
@@ -194,6 +224,12 @@ function gerarDiagnostico() {
   diagnostico = "O aparelho não está reconhecendo sinal de rede. Isso pode estar reslacionado a configurações, componentes internos (como antenas) ou até mesmo a Placa Mãe. É necessário diagnóstico para identificar a causa.";
   valor = "R$ 250 - R$ 600";
   prazo = "1 a 2 dias";
+
+ else if (problema.includes("molhado")) {
+  diagnostico = "O aparelho teve contato com líquido, o que pode causar falhas progressivas ou imediatas. É essencial realizar limpeza interna e análise completa para evitar danos maiores.";
+  valor = "R$ 150 - R$ 600";
+  prazo = "1 a 3 dias";
+}   
 
 } else if (problema.includes("Face ID")) {
   diagnostico = "O Face ID não está funcionando corretamente. Pode estar relacionado a sensores ou componentes internos. Realizamos análise completa para identificar e corrigir o problema.";
