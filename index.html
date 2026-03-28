@@ -116,26 +116,31 @@ function gerarDiagnostico() {
   let valor = "";
   let prazo = "";
 
-  if (problema.includes("Bateria")) {
-    diagnostico = "Provável desgaste natural da bateria.";
-    valor = "R$ 200 - R$ 350";
-    prazo = "30 a 60 minutos";
-  } else if (problema.includes("Não liga")) {
-    diagnostico = "Possível falha na placa ou bateria.";
-    valor = "R$ 300 - R$ 800";
-    prazo = "1 a 3 dias";
-  } else if (problema.includes("Sem sinal")) {
-    diagnostico = "Pode ser problema de antena ou baseband.";
-    valor = "R$ 250 - R$ 600";
-    prazo = "1 a 2 dias";
-  } else if (problema.includes("Face ID")) {
-    diagnostico = "Falha em sensores ou flex.";
-    valor = "R$ 300 - R$ 700";
-    prazo = "1 a 2 dias";
-  } else if (problema.includes("Tela")) {
-    diagnostico = "Necessária substituição de display.";
-    valor = "R$ 400 - R$ 900";
-    prazo = "40 minutos";
+  if (problema.includes("bateria")) {
+  diagnostico = "Substituição de bateria recomendada.";
+  valor = "R$ 200 - R$ 400";
+  prazo = "30 a 60 minutos";
+} else if (problema.includes("tela")) {
+  diagnostico = "Necessária troca de display.";
+  valor = "R$ 400 - R$ 1200";
+  prazo = "40 minutos";
+} else if (problema.includes("Não liga")) {
+  diagnostico = "Possível falha em placa lógica ou bateria.";
+  valor = "R$ 300 - R$ 900";
+  prazo = "1 a 3 dias";
+} else if (problema.includes("carga")) {
+  diagnostico = "Possível falha no conector ou circuito de carga.";
+  valor = "R$ 200 - R$ 500";
+  prazo = "1 dia";
+} else if (problema.includes("câmera")) {
+  diagnostico = "Problema no módulo de câmera.";
+  valor = "R$ 250 - R$ 700";
+  prazo = "1 dia";
+} else if (problema.includes("Alto")) {
+  diagnostico = "Falha no alto-falante.";
+  valor = "R$ 150 - R$ 350";
+  prazo = "1 dia";
+}
   }
 
   const mensagem = `Olá, fiz um diagnóstico no Alpha Check:
