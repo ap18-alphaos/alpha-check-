@@ -116,36 +116,59 @@ function gerarDiagnostico() {
   let valor = "";
   let prazo = "";
 
+  // 💰 TABELA DE PREÇOS (você pode ajustar depois)
+  const precos = {
+    "Troca de tela": {
+      "iPhone 11": 400,
+      "iPhone 12": 600,
+      "iPhone 13": 800,
+      "iPhone 14": 1000,
+      "iPhone 15": 1200
+    },
+    "Troca de bateria": {
+      "iPhone 11": 200,
+      "iPhone 12": 250,
+      "iPhone 13": 300,
+      "iPhone 14": 350,
+      "iPhone 15": 400
+    }
+  };
+
   if (problema.includes("bateria")) {
-  diagnostico = "Substituição de bateria recomendada.";
-  valor = "R$ 200 - R$ 400";
-  prazo = "30 a 60 minutos";
-} else if (problema.includes("tela")) {
-  diagnostico = "Necessária troca de display.";
-  valor = "R$ 400 - R$ 1200";
-  prazo = "40 minutos";
-} else if (problema.includes("Não liga")) {
-  diagnostico = "Possível falha em placa lógica ou bateria.";
-  valor = "R$ 300 - R$ 900";
-  prazo = "1 a 3 dias";
-} else if (problema.includes("carga")) {
-  diagnostico = "Possível falha no conector ou circuito de carga.";
-  valor = "R$ 200 - R$ 500";
-  prazo = "1 dia";
-} else if (problema.includes("câmera")) {
-  diagnostico = "Problema no módulo de câmera.";
-  valor = "R$ 250 - R$ 700";
-  prazo = "1 dia";
-} else if (problema.includes("Alto")) {
-  diagnostico = "Falha no alto-falante.";
-  valor = "R$ 150 - R$ 350";
-  prazo = "1 dia";
-}else if (problema.includes("Face ID")) {
-  diagnostico = "Falha em sensores do Face ID ou flex.";
-  valor = "R$ 300 - R$ 800";
-  prazo = "1 a 2 dias";
-}
-  
+    diagnostico = "Substituição de bateria recomendada.";
+    valor = `R$ ${precos["Troca de bateria"][modelo] || 300}`;
+    prazo = "30 a 60 minutos";
+
+  } else if (problema.includes("tela")) {
+    diagnostico = "Necessária troca de display.";
+    valor = `R$ ${precos["Troca de tela"][modelo] || 800}`;
+    prazo = "40 minutos";
+
+  } else if (problema.includes("Face ID")) {
+    diagnostico = "Falha em sensores do Face ID ou flex.";
+    valor = "R$ 300 - R$ 800";
+    prazo = "1 a 2 dias";
+
+  } else if (problema.includes("Não liga")) {
+    diagnostico = "Possível falha em placa lógica ou bateria.";
+    valor = "R$ 300 - R$ 900";
+    prazo = "1 a 3 dias";
+
+  } else if (problema.includes("carga")) {
+    diagnostico = "Possível falha no conector ou circuito de carga.";
+    valor = "R$ 200 - R$ 500";
+    prazo = "1 dia";
+
+  } else if (problema.includes("câmera")) {
+    diagnostico = "Problema no módulo de câmera.";
+    valor = "R$ 250 - R$ 700";
+    prazo = "1 dia";
+
+  } else if (problema.includes("Alto")) {
+    diagnostico = "Falha no alto-falante.";
+    valor = "R$ 150 - R$ 350";
+    prazo = "1 dia";
+  }
 
   const mensagem = `Olá, fiz um diagnóstico no Alpha Check:
 
