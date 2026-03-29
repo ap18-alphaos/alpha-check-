@@ -1,5 +1,3 @@
-Alpha System backup
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -104,6 +102,13 @@ display: none;
 
 <div class="erro" id="erro">Preencha nome e WhatsApp</div>
 
+<label>Tipo de aparelho</label>
+<select id="tipo" onchange="trocarTipo()">
+<option value="iphone">iPhone</option>
+<option value="android">Android</option>
+</select>
+
+<div id="iphoneCampos">
 <label>Modelo do iPhone</label>
 <select id="modelo">
 <option>iPhone SE</option>
@@ -128,6 +133,7 @@ display: none;
 <option>iPhone 16 Pro</option>
 <option>iPhone 16 Pro Max</option>
 </select>
+</div>
 
 <label>Problema</label>
 <select id="problema">
@@ -142,6 +148,16 @@ display: none;
 <option>Problema na câmera</option>
 <option>Alto-falante sem som</option>
 </select>
+
+<div id="androidCampos" style="display:none;">
+<label>Marca do Android</label>
+<select id="marca">
+<option>Samsung</option>
+<option>Xiaomi</option>
+<option>Motorola</option>
+<option>Outro</option>
+</select>
+</div>
 
 <div id="campoTempo">
 <label>Há quanto tempo começou? (Em caso de defeitos)</label>
@@ -160,6 +176,13 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYVp0UBoKy9eiPNdUeP
 
 const problemaSelect = document.getElementById('problema');
 const campoTempo = document.getElementById('campoTempo');
+
+function trocarTipo() {
+const tipo = document.getElementById('tipo').value;
+
+document.getElementById('iphoneCampos').style.display = tipo === 'iphone' ? 'block' : 'none';
+document.getElementById('androidCampos').style.display = tipo === 'android' ? 'block' : 'none';
+}
 
 function verificarProblema() {
 const problema = problemaSelect.value;
@@ -196,13 +219,74 @@ return;
 erro.style.display = "none";
 }
 
-const modelo = document.getElementById('modelo').value;
+const tipo = document.getElementById('tipo').value;
+
+const modelo = tipo === "iphone"
+? document.getElementById('modelo').value
+: document.getElementById('marca').value;
+
 const problema = document.getElementById('problema').value;
 const tempo = document.getElementById('tempo').value;
 
 let diagnostico = "";
 let valor = "";
 let prazo = "";
+
+if (tipo === "android") {
+
+// ANDROID
+
+if (problema.includes("bateria")) {
+diagnostico = "A bateria do aparelho pode estar desgastada, causando descarga rápida ou desligamentos inesperados. A substituição resolve o problema e melhora o desempenho.";
+valor = "R$ 150 a R$ 400";
+prazo = "Até 1 hora";
+}
+
+else if (problema.includes("tela")) {
+diagnostico = "A tela está danificada ou trincada, podendo comprometer o uso do aparelho. A substituição é necessária para restaurar o funcionamento e a estética.";
+valor = "R$ 200 a R$ 1200";
+prazo = "Até 1 hora";
+}
+
+else if (problema.includes("Não liga")) {
+diagnostico = "O aparelho não está ligando. Pode estar relacionado à bateria, sistema de energia ou falha interna. É necessária análise para identificar a causa.";
+valor = "R$ 150 a R$ 600";
+prazo = "1 a 3 dias";
+}
+
+else if (problema.includes("Não carrega")) {
+diagnostico = "Falha no carregamento, podendo ser no conector ou circuito interno. Realizamos testes para identificar e resolver o problema.";
+valor = "R$ 120 a R$ 350";
+prazo = "Até 1 dia";
+}
+
+else if (problema.includes("Sem sinal")) {
+diagnostico = "O aparelho não está reconhecendo sinal de rede. Pode estar relacionado a configurações ou falhas internas.";
+valor = "R$ 150 a R$ 500";
+prazo = "1 a 2 dias";
+}
+
+else if (problema.includes("molhado")) {
+diagnostico = "O aparelho teve contato com líquido. É essencial limpeza interna imediata para evitar danos maiores.";
+valor = "R$ 150 a R$ 600";
+prazo = "1 a 3 dias";
+}
+
+else if (problema.includes("câmera")) {
+diagnostico = "A câmera apresenta falhas e pode precisar de substituição para voltar ao funcionamento normal.";
+valor = "R$ 150 a R$ 500";
+prazo = "Até 1 dia";
+}
+
+else if (problema.includes("Alto")) {
+diagnostico = "O aparelho está com falha no áudio. Pode ser necessário limpeza ou troca do componente.";
+valor = "R$ 100 a R$ 300";
+prazo = "Até 1 dia";
+}
+
+} else {
+
+// IPHONE ORIGINAL (INTACTO)
 
 if (problema.includes("bateria")) {
 diagnostico = "A bateria do seu iPhone apresenta desgaste natural ou falha, causando descarregamento rápido ou desligamentos inesperados. A substituição resolve o problema e melhora o desempenho do aparelho.";
@@ -253,6 +337,8 @@ prazo = "1 dia";
 diagnostico = "O som do aparelho está baixo, falhando ou sem funcionar. Pode ser necessário realizar limpeza ou substituição do alto-falante.";
 valor = "R$ 150 - R$ 350";
 prazo = "1 dia";
+}
+
 }
 
 // 🔥 SALVAR NA PLANILHA
