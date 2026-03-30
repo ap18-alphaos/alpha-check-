@@ -197,9 +197,11 @@ verificarProblema();
 }
 
 function verificarProblema() {
+const tipo = document.getElementById('tipo').value;  
 const problema = problemaSelect.value;
 
 if (
+tipo === "iphone" && (
 problema.includes("Não liga") ||
 problema.includes("Sem sinal") ||
 problema.includes("WI-FI") ||
@@ -208,6 +210,7 @@ problema.includes("molhado") ||
 problema.includes("carrega") ||
 problema.includes("câmera") ||
 problema.includes("Alto")
+)
 ) {
 campoTempo.style.display = "block";
 } else {
