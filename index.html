@@ -180,18 +180,20 @@ const campoTempo = document.getElementById('campoTempo');
 function trocarTipo() {
 const tipo = document.getElementById('tipo').value;
 
+// alterna campos
 document.getElementById('iphoneCampos').style.display = tipo === 'iphone' ? 'block' : 'none';
 document.getElementById('androidCampos').style.display = tipo === 'android' ? 'block' : 'none';
 
 // limpa resultado
-document.getElementById('resultado').style.display = "none";
-document.getElementById('resultado').innerHTML = "";
+const resultado = document.getElementById('resultado');
+resultado.style.display = "none";
+resultado.innerHTML = "";
 
 // limpa tempo
 document.getElementById('tempo').value = "";
 
-// reseta problema
-document.getElementById('problema').selectedIndex = 0;
+// 🔥 FORÇA atualização do sistema
+verificarProblema();
 }
 
 function verificarProblema() {
