@@ -182,6 +182,9 @@ const tipo = document.getElementById('tipo').value;
 
 document.getElementById('iphoneCampos').style.display = tipo === 'iphone' ? 'block' : 'none';
 document.getElementById('androidCampos').style.display = tipo === 'android' ? 'block' : 'none';
+
+// ✅ CORREÇÃO: limpa resultado ao trocar
+document.getElementById('resultado').style.display = "none";
 }
 
 function verificarProblema() {
@@ -205,6 +208,9 @@ campoTempo.style.display = "none";
 
 problemaSelect.addEventListener('change', verificarProblema);
 verificarProblema();
+
+// ✅ CORREÇÃO: executa ao carregar
+trocarTipo();
 
 window.gerarDiagnostico = function () {
 
@@ -234,7 +240,7 @@ let prazo = "";
 
 if (tipo === "android") {
 
-// ANDROID
+// ANDROID (intacto)
 
 if (problema.includes("bateria")) {
 diagnostico = "A bateria do aparelho pode estar desgastada, causando descarga rápida ou desligamentos inesperados. A substituição resolve o problema e melhora o desempenho.";
@@ -286,7 +292,7 @@ prazo = "Até 1 dia";
 
 } else {
 
-// IPHONE ORIGINAL (INTACTO)
+// IPHONE 100% INTACTO
 
 if (problema.includes("bateria")) {
 diagnostico = "A bateria do seu iPhone apresenta desgaste natural ou falha, causando descarregamento rápido ou desligamentos inesperados. A substituição resolve o problema e melhora o desempenho do aparelho.";
@@ -341,7 +347,7 @@ prazo = "1 dia";
 
 }
 
-// 🔥 SALVAR NA PLANILHA
+// 🔥 restante igual
 fetch(SCRIPT_URL, {
 method: "POST",
 body: JSON.stringify({
