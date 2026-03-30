@@ -183,8 +183,15 @@ const tipo = document.getElementById('tipo').value;
 document.getElementById('iphoneCampos').style.display = tipo === 'iphone' ? 'block' : 'none';
 document.getElementById('androidCampos').style.display = tipo === 'android' ? 'block' : 'none';
 
-// ✅ CORREÇÃO: limpa resultado ao trocar
+// limpa resultado
 document.getElementById('resultado').style.display = "none";
+document.getElementById('resultado').innerHTML = "";
+
+// limpa tempo
+document.getElementById('tempo').value = "";
+
+// reseta problema
+document.getElementById('problema').selectedIndex = 0;
 }
 
 function verificarProblema() {
