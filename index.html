@@ -177,8 +177,11 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYVp0UBoKy9eiPNdUeP
 const problemaSelect = document.getElementById('problema');
 const campoTempo = document.getElementById('campoTempo');
 
+<!-- SUBSTITUA APENAS A FUNÇÃO trocarTipo POR ESSA -->
+
 window.trocarTipo = function () {
 const tipo = document.getElementById('tipo').value;
+const problemaSelect = document.getElementById('problema');
 
 // alterna campos
 document.getElementById('iphoneCampos').style.display = tipo === 'iphone' ? 'block' : 'none';
@@ -192,7 +195,36 @@ resultado.innerHTML = "";
 // limpa tempo
 document.getElementById('tempo').value = "";
 
-// 🔥 FORÇA atualização do sistema
+// 🔥 LISTA DE PROBLEMAS POR TIPO
+if (tipo === "iphone") {
+problemaSelect.innerHTML = `
+<option>Troca de bateria</option>
+<option>Troca de tela</option>
+<option>Não liga</option>
+<option>Sem sinal de Rede</option>
+<option>Sem WI-FI</option>
+<option>iPhone molhado</option>
+<option>Face ID não funciona</option>
+<option>Não carrega</option>
+<option>Problema na câmera</option>
+<option>Alto-falante sem som</option>
+`;
+} else {
+problemaSelect.innerHTML = `
+<option>Troca de bateria</option>
+<option>Troca de tela</option>
+<option>Não liga</option>
+<option>Sem sinal de Rede</option>
+<option>Não conecta Wi-Fi</option>
+<option>Celular molhado</option>
+<option>Não carrega</option>
+<option>Problema na câmera</option>
+<option>Alto-falante sem som</option>
+<option>Travado na LOGO</option>
+`;
+}
+
+// 🔥 atualiza comportamento
 verificarProblema();
 }
 
