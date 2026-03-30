@@ -177,7 +177,7 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYVp0UBoKy9eiPNdUeP
 const problemaSelect = document.getElementById('problema');
 const campoTempo = document.getElementById('campoTempo');
 
-function trocarTipo() {
+window.trocarTipo = function () {
 const tipo = document.getElementById('tipo').value;
 
 // alterna campos
