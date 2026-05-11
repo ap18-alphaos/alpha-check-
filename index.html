@@ -1,17 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-
 <meta charset="UTF-8">
-
-<title>Alpha System</title>
-
+<title>Alpha System — Diagnóstico Rápido</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0a0a0a">
 <link rel="apple-touch-icon" href="/icon-192.png">
-
 <meta property="og:title" content="Diagnóstico Rápido de iPhone">
 <meta property="og:description" content="Descubra o problema do seu iPhone de forma rápida e segura.">
 <meta property="og:image" content="https://alpha-check.vercel.app/preview.jpg?v=30" />
@@ -20,424 +15,853 @@
 <meta property="og:image:height" content="630" />
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://alpha-check.vercel.app">
-
 <meta name="twitter:card" content="summary_large_image">
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
 <style>
-body {
-font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-background: #0a0a0a;
-color: white;
-display: flex;
-justify-content: center;
-align-items: center;
-height: 100vh;
-margin: 0;
-}
-.container {
-background: #111;
-padding: 30px;
-border-radius: 20px;
-width: 100%;
-max-width: 400px;
-box-shadow: 0 0 30px rgba(0, 140, 255, 0.3);
-}
-h1 {
-text-align: center;
-color: #00aaff;
-}
-select, input, button {
-width: 100%;
-margin-top: 10px;
-padding: 12px;
-border-radius: 10px;
-border: none;
-font-size: 14px;
-}
-button {
-background: #00aaff;
-color: white;
-cursor: pointer;
-font-weight: bold;
-}
-button:hover {
-opacity: 0.9;
-}
-.result {
-margin-top: 20px;
-background: #000;
-padding: 15px;
-border-radius: 10px;
-display: none;
-}
-a.whatsapp {
-display: block;
-margin-top: 10px;
-text-align: center;
-background: #25D366;
-padding: 12px;
-border-radius: 10px;
-color: white;
-text-decoration: none;
-font-weight: bold;
-}
-.erro {
-color: #ff4d4d;
-font-size: 12px;
-margin-top: 5px;
-display: none;
-}
+  :root {
+    --bg: #060608;
+    --surface: #0e0e12;
+    --surface2: #16161c;
+    --border: rgba(0, 170, 255, 0.12);
+    --border-hover: rgba(0, 170, 255, 0.35);
+    --blue: #00aaff;
+    --blue-dim: rgba(0, 170, 255, 0.08);
+    --blue-glow: rgba(0, 170, 255, 0.25);
+    --blue-glow-strong: rgba(0, 170, 255, 0.45);
+    --text: #f0f0f5;
+    --text-muted: #7a7a8a;
+    --text-dim: #3a3a4a;
+    --green: #25D366;
+    --red: #ff4d6a;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Background glow orbs */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(0,170,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -200px;
+    right: -100px;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(0,100,200,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    width: 100%;
+    max-width: 440px;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--blue-dim);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 16px;
+    margin-bottom: 16px;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+
+  .logo-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--blue);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--blue);
+    animation: pulse 2s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--blue); }
+    50% { opacity: 0.5; box-shadow: 0 0 4px var(--blue); }
+  }
+
+  .header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .header h1 span {
+    color: var(--blue);
+    text-shadow: 0 0 20px var(--blue-glow-strong);
+  }
+
+  .header p {
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.5),
+      0 20px 60px rgba(0,0,0,0.5),
+      0 0 40px var(--blue-glow);
+    transition: box-shadow 0.4s ease;
+  }
+
+  .card:hover {
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.5),
+      0 20px 60px rgba(0,0,0,0.6),
+      0 0 60px var(--blue-glow-strong);
+  }
+
+  /* Form groups */
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 7px;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 13px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7a8a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+
+  input::placeholder { color: var(--text-dim); }
+
+  input:focus, select:focus {
+    border-color: var(--blue);
+    background: #12121a;
+    box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.1), inset 0 0 0 1px rgba(0,170,255,0.05);
+  }
+
+  input.error {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(255, 77, 106, 0.1);
+  }
+
+  /* Device toggle */
+  .device-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .device-btn {
+    padding: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .device-btn:hover {
+    border-color: var(--border-hover);
+    color: var(--text);
+  }
+
+  .device-btn.active {
+    background: var(--blue-dim);
+    border-color: var(--blue);
+    color: var(--blue);
+    box-shadow: 0 0 16px rgba(0,170,255,0.1);
+  }
+
+  .device-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+  }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+
+  /* Collapsible field */
+  .field-collapsible {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.35s ease, opacity 0.25s ease, margin 0.35s ease;
+    margin-bottom: 0;
+  }
+
+  .field-collapsible.visible {
+    max-height: 120px;
+    opacity: 1;
+    margin-bottom: 16px;
+  }
+
+  /* Error message */
+  .error-msg {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--red);
+    font-size: 12px;
+    margin-top: 8px;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .error-msg.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Submit button */
+  .btn-submit {
+    width: 100%;
+    padding: 16px;
+    background: var(--blue);
+    color: #000;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s;
+    box-shadow: 0 4px 20px rgba(0,170,255,0.3);
+    margin-top: 4px;
+  }
+
+  .btn-submit:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 30px rgba(0,170,255,0.45);
+  }
+
+  .btn-submit:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .btn-submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .btn-submit .btn-text { transition: opacity 0.2s; }
+
+  .btn-submit .btn-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .btn-submit.loading .btn-text { opacity: 0; }
+  .btn-submit.loading .btn-loading { opacity: 1; }
+
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(0,0,0,0.3);
+    border-top-color: #000;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Result */
+  .result {
+    margin-top: 20px;
+    background: linear-gradient(135deg, rgba(0,170,255,0.05), rgba(0,80,180,0.05));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: none;
+    animation: resultIn 0.4s ease both;
+  }
+
+  @keyframes resultIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 4px;
+  }
+
+  .result-value {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  .result-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .result-chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+  }
+
+  .result-chip .result-label { margin-bottom: 2px; }
+  .result-chip .result-value { font-size: 13px; font-weight: 500; margin-bottom: 0; }
+
+  .btn-whatsapp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 15px;
+    background: var(--green);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 16px rgba(37, 211, 102, 0.25);
+  }
+
+  .btn-whatsapp:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(37, 211, 102, 0.35);
+  }
+
+  .btn-whatsapp svg {
+    width: 18px;
+    height: 18px;
+    fill: white;
+    flex-shrink: 0;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+  }
+
+  /* Masked input hint */
+  .input-hint {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 5px;
+    transition: color 0.2s;
+  }
+
+  input:focus + .input-hint {
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 420px) {
+    .card { padding: 22px 18px; }
+    .header h1 { font-size: 24px; }
+    .form-row { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
 
-<div class="container">
-<h1>Alpha System</h1>
+<div class="wrapper">
+  <div class="header">
+    <div class="logo-badge">Alpha System</div>
+    <h1>Diagnóstico <span>Rápido</span></h1>
+    <p>Descubra o problema do seu aparelho em segundos</p>
+  </div>
 
-<label>Seu nome</label>
-<input type="text" id="nome" placeholder="Digite seu nome">
+  <div class="card">
 
-<label>WhatsApp</label>
-<input type="text" id="telefone" placeholder="(55) 99999-9999">
+    <!-- Nome e Telefone -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="nome">Seu nome</label>
+        <input type="text" id="nome" placeholder="Ex: João Silva" autocomplete="given-name">
+      </div>
+      <div class="form-group">
+        <label for="telefone">WhatsApp</label>
+        <input type="tel" id="telefone" placeholder="(55) 99999-9999" maxlength="16" inputmode="numeric">
+      </div>
+    </div>
 
-<div class="erro" id="erro">Preencha nome e WhatsApp</div>
+    <div id="erro" class="error-msg">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <circle cx="6" cy="6" r="5.5" stroke="#ff4d6a"/>
+        <path d="M6 3.5v3M6 8h.01" stroke="#ff4d6a" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+      Preencha nome e WhatsApp para continuar
+    </div>
 
-<label>Tipo de aparelho</label>
-<select id="tipo" onchange="trocarTipo()">
-<option value="iphone">iPhone</option>
-<option value="android">Android</option>
-</select>
+    <div class="divider"></div>
 
-<div id="iphoneCampos">
-<label>Modelo do iPhone</label>
-<select id="modelo">
-<option>iPhone SE</option>
-<option>iPhone XR</option>
-<option>iPhone X/XS</option>
-<option>iPhone 11</option>
-<option>iPhone 11 Pro</option>
-<option>iPhone 11 Pro Max</option>
-<option>iPhone 12</option>
-<option>iPhone 12 Pro</option>
-<option>iPhone 12 Pro Max</option>
-<option>iPhone 13</option>
-<option>iPhone 13 Pro</option>
-<option>iPhone 13 Pro Max</option>
-<option>iPhone 14</option>
-<option>iPhone 14 Pro</option>
-<option>iPhone 14 Pro Max</option>
-<option>iPhone 15</option>
-<option>iPhone 15 Pro</option>
-<option>iPhone 15 Pro Max</option>
-<option>iPhone 16</option>
-<option>iPhone 16 Pro</option>
-<option>iPhone 16 Pro Max</option>
-</select>
-</div>
+    <!-- Tipo de aparelho -->
+    <div class="form-group">
+      <label>Tipo de aparelho</label>
+      <div class="device-toggle">
+        <button type="button" class="device-btn active" id="btn-iphone" onclick="setTipo('iphone')">
+          <svg viewBox="0 0 24 24"><path d="M17 2H7C5.9 2 5 2.9 5 4v16c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-5 18c-.83 0-1.5-.67-1.5-1.5S11.17 17 12 17s1.5.67 1.5 1.5S12.83 20 12 20zm5-4H7V4h10v12z"/></svg>
+          iPhone
+        </button>
+        <button type="button" class="device-btn" id="btn-android" onclick="setTipo('android')">
+          <svg viewBox="0 0 24 24"><path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24C14.9 8.13 13.49 7.75 12 7.75s-2.9.38-4.47 1.16L5.65 5.67c-.19-.28-.54-.37-.83-.22-.3.16-.42.54-.26.85L6.4 9.48C3.3 11.25 1.28 14.44 1 18h22c-.28-3.56-2.3-6.75-5.4-8.52zM7 15.25c-.69 0-1.25-.56-1.25-1.25S6.31 12.75 7 12.75 8.25 13.31 8.25 14 7.69 15.25 7 15.25zm10 0c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/></svg>
+          Android
+        </button>
+      </div>
+    </div>
 
-<label>Problema</label>
-<select id="problema">
-<option>Troca de bateria</option>
-<option>Troca de tela</option>
-<option>Não liga</option>
-<option>Sem sinal</option>
-<option>Sem WI-FI</option>
-<option>iPhone molhado</option>
-<option>Face ID não funciona</option>
-<option>Não carrega</option>
-<option>Problema na câmera</option>
-<option>Alto-falante sem som</option>
-</select>
+    <!-- Campos iPhone -->
+    <div id="iphoneCampos" class="form-group">
+      <label for="modelo">Modelo do iPhone</label>
+      <select id="modelo">
+        <optgroup label="iPhone SE">
+          <option>iPhone SE (1ª geração)</option>
+          <option>iPhone SE (2ª geração)</option>
+          <option>iPhone SE (3ª geração)</option>
+        </optgroup>
+        <optgroup label="iPhone X">
+          <option>iPhone X</option>
+          <option>iPhone XR</option>
+          <option>iPhone XS</option>
+          <option>iPhone XS Max</option>
+        </optgroup>
+        <optgroup label="iPhone 11">
+          <option>iPhone 11</option>
+          <option>iPhone 11 Pro</option>
+          <option>iPhone 11 Pro Max</option>
+        </optgroup>
+        <optgroup label="iPhone 12">
+          <option>iPhone 12 mini</option>
+          <option>iPhone 12</option>
+          <option>iPhone 12 Pro</option>
+          <option>iPhone 12 Pro Max</option>
+        </optgroup>
+        <optgroup label="iPhone 13">
+          <option>iPhone 13 mini</option>
+          <option>iPhone 13</option>
+          <option>iPhone 13 Pro</option>
+          <option>iPhone 13 Pro Max</option>
+        </optgroup>
+        <optgroup label="iPhone 14">
+          <option>iPhone 14</option>
+          <option>iPhone 14 Plus</option>
+          <option>iPhone 14 Pro</option>
+          <option>iPhone 14 Pro Max</option>
+        </optgroup>
+        <optgroup label="iPhone 15">
+          <option>iPhone 15</option>
+          <option>iPhone 15 Plus</option>
+          <option>iPhone 15 Pro</option>
+          <option>iPhone 15 Pro Max</option>
+        </optgroup>
+        <optgroup label="iPhone 16">
+          <option>iPhone 16</option>
+          <option>iPhone 16 Plus</option>
+          <option>iPhone 16 Pro</option>
+          <option>iPhone 16 Pro Max</option>
+        </optgroup>
+      </select>
+    </div>
 
-<div id="androidCampos" style="display:none;">
-<label>Marca do Android</label>
-<select id="marca">
-<option>Samsung</option>
-<option>Xiaomi</option>
-<option>Motorola</option>
-<option>Outro</option>
-</select>
-</div>
+    <!-- Campos Android -->
+    <div id="androidCampos" style="display:none;" class="form-group">
+      <label for="marca">Marca</label>
+      <select id="marca" onchange="atualizarModelosAndroid()">
+        <option value="Samsung">Samsung</option>
+        <option value="Xiaomi">Xiaomi</option>
+        <option value="Motorola">Motorola</option>
+        <option value="Outro">Outro</option>
+      </select>
+    </div>
 
-<div id="campoTempo">
-<label>Há quanto tempo começou? (Em caso de defeitos)</label>
-<input type="text" id="tempo" placeholder="Ex: 2 dias, 1 semana">
-</div>
+    <!-- Problema -->
+    <div class="form-group">
+      <label for="problema">Problema relatado</label>
+      <select id="problema" onchange="verificarProblema()"></select>
+    </div>
 
-<button onclick="gerarDiagnostico()">Gerar diagnóstico</button>
+    <!-- Tempo (condicional) -->
+    <div class="field-collapsible" id="campoTempo">
+      <div class="form-group">
+        <label for="tempo">Há quanto tempo começou?</label>
+        <input type="text" id="tempo" placeholder="Ex: 2 dias, 1 semana">
+      </div>
+    </div>
 
-<div class="result" id="resultado"></div>
+    <!-- Botão -->
+    <button class="btn-submit" id="btnSubmit" onclick="gerarDiagnostico()">
+      <span class="btn-text">Gerar Diagnóstico</span>
+      <span class="btn-loading">
+        <span class="spinner"></span>
+        Analisando...
+      </span>
+    </button>
+
+    <!-- Resultado -->
+    <div class="result" id="resultado"></div>
+  </div>
+
+  <div class="footer">© Alpha System · Itaqui-RS</div>
 </div>
 
 <script>
-window.onload = function () {
-
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYVp0UBoKy9eiPNdUePPsUZr-i2aIm9qL4NYgBwVvb8ictv3Umkdy5K4dOd73KlAFg/exec";
 
-const problemaSelect = document.getElementById('problema');
-const campoTempo = document.getElementById('campoTempo');
+let tipoAtual = 'iphone';
 
-<!-- SUBSTITUA APENAS A FUNÇÃO trocarTipo POR ESSA -->
+const PROBLEMAS_IPHONE = [
+  'Troca de bateria',
+  'Troca de tela',
+  'Não liga',
+  'Sem sinal de rede',
+  'Sem Wi-Fi',
+  'iPhone molhado',
+  'Face ID não funciona',
+  'Não carrega',
+  'Problema na câmera',
+  'Alto-falante sem som'
+];
 
-window.trocarTipo = function () {
-const tipo = document.getElementById('tipo').value;
-const problemaSelect = document.getElementById('problema');
+const PROBLEMAS_ANDROID = [
+  'Troca de bateria',
+  'Troca de tela',
+  'Não liga',
+  'Sem sinal de rede',
+  'Sem Wi-Fi',
+  'Celular molhado',
+  'Não carrega',
+  'Problema na câmera',
+  'Alto-falante sem som'
+];
 
-// alterna campos
-document.getElementById('iphoneCampos').style.display = tipo === 'iphone' ? 'block' : 'none';
-document.getElementById('androidCampos').style.display = tipo === 'android' ? 'block' : 'none';
+const PROBLEMAS_COM_TEMPO_IPHONE = [
+  'Não liga', 'Sem sinal', 'Wi-Fi', 'Face ID', 'molhado', 'carrega', 'câmera', 'Alto'
+];
 
-// limpa resultado
-const resultado = document.getElementById('resultado');
-resultado.style.display = "none";
-resultado.innerHTML = "";
+function setTipo(tipo) {
+  tipoAtual = tipo;
 
-// limpa tempo
-document.getElementById('tempo').value = "";
+  document.getElementById('btn-iphone').classList.toggle('active', tipo === 'iphone');
+  document.getElementById('btn-android').classList.toggle('active', tipo === 'android');
+  document.getElementById('iphoneCampos').style.display = tipo === 'iphone' ? 'block' : 'none';
+  document.getElementById('androidCampos').style.display = tipo === 'android' ? 'block' : 'none';
 
-// 🔥 LISTA DE PROBLEMAS POR TIPO
-if (tipo === "iphone") {
-problemaSelect.innerHTML = `
-<option>Troca de bateria</option>
-<option>Troca de tela</option>
-<option>Não liga</option>
-<option>Sem sinal de Rede</option>
-<option>Sem WI-FI</option>
-<option>iPhone molhado</option>
-<option>Face ID não funciona</option>
-<option>Não carrega</option>
-<option>Problema na câmera</option>
-<option>Alto-falante sem som</option>
-`;
-} else {
-problemaSelect.innerHTML = `
-<option>Troca de bateria</option>
-<option>Troca de tela</option>
-<option>Não liga</option>
-<option>Sem sinal de Rede</option>
-<option>Sem WI-FI</option>
-<option>Celular molhado</option>
-<option>Não carrega</option>
-<option>Problema na câmera</option>
-<option>Alto-falante sem som</option>
-`;
+  preencherProblemas(tipo === 'iphone' ? PROBLEMAS_IPHONE : PROBLEMAS_ANDROID);
+
+  // Reset
+  document.getElementById('resultado').style.display = 'none';
+  document.getElementById('resultado').innerHTML = '';
+  document.getElementById('tempo').value = '';
+  verificarProblema();
 }
 
-// 🔥 atualiza comportamento
-verificarProblema();
+function preencherProblemas(lista) {
+  const sel = document.getElementById('problema');
+  sel.innerHTML = lista.map(p => `<option>${p}</option>`).join('');
 }
 
 function verificarProblema() {
-const tipo = document.getElementById('tipo').value;  
-const problema = problemaSelect.value;
+  const problema = document.getElementById('problema').value;
+  const campo = document.getElementById('campoTempo');
 
-if (
-tipo === "iphone" && (
-problema.includes("Não liga") ||
-problema.includes("Sem sinal") ||
-problema.includes("WI-FI") ||
-problema.includes("Face ID") ||
-problema.includes("molhado") ||
-problema.includes("carrega") ||
-problema.includes("câmera") ||
-problema.includes("Alto")
-)
-) {
-campoTempo.style.display = "block";
-} else {
-campoTempo.style.display = "none";
-}
+  if (tipoAtual === 'iphone') {
+    const mostrar = PROBLEMAS_COM_TEMPO_IPHONE.some(k => problema.includes(k));
+    campo.classList.toggle('visible', mostrar);
+  } else {
+    campo.classList.remove('visible');
+  }
 }
 
-problemaSelect.addEventListener('change', verificarProblema);
-verificarProblema();
-
-// ✅ CORREÇÃO: executa ao carregar
-trocarTipo();
-
-window.gerarDiagnostico = function () {
-
-const nome = document.getElementById('nome').value.trim();
-const telefone = document.getElementById('telefone').value.trim();
-const erro = document.getElementById('erro');
-
-if (!nome || !telefone) {
-erro.style.display = "block";
-return;
-} else {
-erro.style.display = "none";
-}
-
-const tipo = document.getElementById('tipo').value;
-
-const modelo = tipo === "iphone"
-? document.getElementById('modelo').value
-: document.getElementById('marca').value;
-
-const problema = document.getElementById('problema').value;
-const tempo = document.getElementById('tempo').value;
-
-let diagnostico = "";
-let valor = "";
-let prazo = "";
-
-if (tipo === "android") {
-
-// ANDROID (intacto)
-
-if (problema.includes("bateria")) {
-diagnostico = "A bateria do aparelho pode estar desgastada, causando descarga rápida ou desligamentos inesperados. A substituição resolve o problema e melhora o desempenho.";
-valor = "R$ 150 a R$ 300 (Dependendo do Modelo)";
-prazo = "Até 1 hora";
-}
-
-else if (problema.includes("tela")) {
-diagnostico = "A tela está danificada ou trincada, podendo comprometer o uso do aparelho. A substituição é necessária para restaurar o funcionamento e a estética.";
-valor = "R$ 250 a R$ 750 (Dependendo do Modelo)";
-prazo = "De 1 a 3 horas";
-}
-
-else if (problema.includes("Não liga")) {
-diagnostico = "O aparelho não está ligando. Pode estar relacionado à bateria, Falha de carregamento ou até mesmo Curto-circuito na Placa Mãe . É necessária análise para identificar a causa.";
-valor = "R$ 150 a R$ 600";
-prazo = "1 a 3 dias";
-}
-
-else if (problema.includes("Não carrega")) {
-diagnostico = "Falha no carregamento, podendo ser no conector de carga ou circuito interno na Placa Mãe. Realizamos testes para identificar e resolver o problema.";
-valor = "R$ 90 a R$ 350";
-prazo = "Até 1 dia";
-}
-
-else if (problema.includes("Sem sinal")) {
-diagnostico = "O aparelho não está reconhecendo sinal de rede. Pode estar relacionado a configurações do sistema ou falhas na Placa Mãe. É necessária uma análise para identicar";
-valor = "R$ 150 a R$ 500";
-prazo = "1 a 2 dias";
-}
-
-else if (problema.includes("WI-FI")) {
-diagnostico = "Problemas no Wi-Fi. Pode ser configuração do sistema, Antenas com falhas ou Defeito na Placa Mãe, é necessária análise mais aprofundada para identificar a causa.";
-valor = "R$ 150 - R$ 350";
-prazo = "1 a 2 dias";  
-}
-  
-else if (problema.includes("molhado")) {
-diagnostico = "O aparelho teve contato com líquido. É essencial limpeza interna imediata para evitar danos maiores. Neste caso o tempo é determinante para a recuperação do aparelho";
-valor = "R$ 150 a R$ 400";
-prazo = "1 a 3 dias";
-}
-
-else if (problema.includes("câmera")) {
-diagnostico = "A câmera apresenta falhas. Está embaçada ou inoperante. Pode precisar de substituição para voltar ao funcionamento normal.";
-valor = "R$ 150 a R$ 350";
-prazo = "Até 1 dia";
-}
-
-else if (problema.includes("Alto")) {
-diagnostico = "O aparelho está com falhas no áudio. Pode ser necessário limpeza ou troca do Alto-falante.";
-valor = "R$ 50 a R$ 200";
-prazo = "Até 1 dia";
-}
-
-} else {
-
-// IPHONE 100% INTACTO
-
-if (problema.includes("bateria")) {
-diagnostico = "A bateria do seu iPhone apresenta desgaste natural ou falha, causando descarregamento rápido ou desligamentos inesperados. A substituição resolve o problema e melhora o desempenho do aparelho.";
-valor = "R$ 250 - R$ 550";
-prazo = "60 a 120 minutos";
-
-} else if (problema.includes("tela")) {
-diagnostico = "A tela está danificada ou não responde corretamente ao toque. É necessário substituir o display para restaurar a imagem e o funcionamento normal.";
-valor = "R$ 250 - R$ 1350";
-prazo = "60 a 120 minutos";
-
-} else if (problema.includes("Não liga")) {
-diagnostico = "Seu iPhone não está ligando. Isso pode estar relacionado à bateria, sistema de carregamento ou até mesmo Curto-circuito na Placa Mãe. Realizamos testes para identificar a causa exata e resolver com segurança.";
-valor = "R$ 300 - R$ 900";
-prazo = "1 a 3 dias";
-
-} else if (problema.includes("Sem sinal")) {
-diagnostico = "O aparelho não está reconhecendo sinal de rede. Isso pode estar relacionado a configurações, componentes internos ou ate mesmo defeito na Placa Mãe. É necessária análise mais aprofundada para identificar a causa.";
-valor = "R$ 250 - R$ 600";
-prazo = "1 a 2 dias";
-
-} else if (
-problema.includes("Wi-Fi") ||
-problema.includes("WI-FI")
-) {
-diagnostico = "Problemas no Wi-Fi. Pode ser configuração do sistema, Antenas com falhas ou Defeito na Placa Mãe, é necessária análise mais aprofundada para identificar a causa.";
-valor = "R$ 150 - R$ 350";
-prazo = "1 a 2 dias";  
-
-} else if (problema.includes("molhado")) {
-diagnostico = "O aparelho teve contato com líquido, o que pode causar falhas progressivas ou imediatas. É essencial realizar limpeza interna e análise completa para evitar danos maiores.";
-valor = "R$ 150 - R$ 600";
-prazo = "1 a 3 dias";
-
-} else if (problema.includes("Face ID")) {
-diagnostico = "O Face ID não está funcionando corretamente. Pode estar relacionado a sensores ou componentes internos. Realizamos análise completa para identificar e corrigir o problema.";
-valor = "R$ 300 - R$ 800";
-prazo = "1 a 2 dias";
-
-} else if (problema.includes("carrega")) {
-diagnostico = "O iPhone apresenta falha ao carregar ou conexão instável. Pode estar relacionado ao conector de carga ou até mesmo defeito na Placa Mãe. É necessária uma análise mais aprofundada.";
-valor = "R$ 250 - R$ 500";
-prazo = "1 dia";
-
-} else if (problema.includes("câmera")) {
-diagnostico = "A câmera apresenta falhas, como imagem embaçada ou sem funcionamento. Pode ser necessário substituir o componente.";
-valor = "R$ 250 - R$ 700";
-prazo = "1 dia";
-
-} else if (problema.includes("Alto")) {
-diagnostico = "O som do aparelho está baixo, falhando ou sem funcionar. Pode ser necessário realizar limpeza ou substituição do alto-falante.";
-valor = "R$ 150 - R$ 350";
-prazo = "1 dia";
-}
-
-}
-
-// 🔥 restante igual
-fetch(SCRIPT_URL, {
-method: "POST",
-body: JSON.stringify({
-nome,
-telefone,
-modelo,
-problema,
-diagnostico
-})
+// Máscara de telefone
+document.getElementById('telefone').addEventListener('input', function(e) {
+  let v = e.target.value.replace(/\D/g, '');
+  if (v.length > 11) v = v.slice(0, 11);
+  if (v.length >= 2) v = '(' + v.slice(0,2) + ') ' + v.slice(2);
+  if (v.length >= 10) {
+    const base = v.replace(/[^0-9]/g, '');
+    if (base.length === 11) {
+      v = '(' + base.slice(0,2) + ') ' + base.slice(2,7) + '-' + base.slice(7);
+    } else {
+      v = '(' + base.slice(0,2) + ') ' + base.slice(2,6) + '-' + base.slice(6);
+    }
+  }
+  e.target.value = v;
 });
 
-const mensagem = `Olá, fiz um diagnóstico no Alpha System:
+function gerarDiagnostico() {
+  const nome = document.getElementById('nome').value.trim();
+  const telefone = document.getElementById('telefone').value.trim();
+  const erroEl = document.getElementById('erro');
+  const nomeInput = document.getElementById('nome');
+  const telInput = document.getElementById('telefone');
 
-Nome: ${nome}
-Telefone: ${telefone}
+  // Validação
+  if (!nome || !telefone || telefone.replace(/\D/g,'').length < 10) {
+    erroEl.classList.add('visible');
+    if (!nome) nomeInput.classList.add('error');
+    if (!telefone || telefone.replace(/\D/g,'').length < 10) telInput.classList.add('error');
+    return;
+  }
 
-Modelo: ${modelo}
-Problema: ${problema}
-Tempo: ${tempo}
+  erroEl.classList.remove('visible');
+  nomeInput.classList.remove('error');
+  telInput.classList.remove('error');
 
-Diagnóstico: ${diagnostico}
-Valor estimado: ${valor}
-Prazo: ${prazo}`;
+  const modelo = tipoAtual === 'iphone'
+    ? document.getElementById('modelo').value
+    : document.getElementById('marca').value;
 
-const link = `https://wa.me/55991269300?text=${encodeURIComponent(mensagem)}`;
+  const problema = document.getElementById('problema').value;
+  const tempo = document.getElementById('tempo').value;
 
-const resultado = document.getElementById('resultado');
-resultado.style.display = "block";
-resultado.innerHTML = `
-<strong>Diagnóstico:</strong> ${diagnostico}<br>
-<strong>Valor:</strong> ${valor}<br>
-<strong>Prazo:</strong> ${prazo}
-<a class="whatsapp" href="${link}" target="_blank">Falar no WhatsApp</a>
-`;
-};
+  let diagnostico = '', valor = '', prazo = '';
 
-};
+  if (tipoAtual === 'android') {
+    if (problema.includes('bateria')) {
+      diagnostico = 'A bateria do aparelho pode estar desgastada, causando descarga rápida ou desligamentos inesperados. A substituição resolve o problema e melhora o desempenho.';
+      valor = 'R$ 150 a R$ 300'; prazo = 'Até 1 hora';
+    } else if (problema.includes('tela')) {
+      diagnostico = 'A tela está danificada ou trincada, podendo comprometer o uso do aparelho. A substituição é necessária para restaurar o funcionamento e a estética.';
+      valor = 'R$ 250 a R$ 750'; prazo = 'De 1 a 3 horas';
+    } else if (problema.includes('Não liga')) {
+      diagnostico = 'O aparelho não está ligando. Pode estar relacionado à bateria, falha de carregamento ou curto-circuito na placa-mãe. É necessária análise para identificar a causa.';
+      valor = 'R$ 150 a R$ 600'; prazo = '1 a 3 dias';
+    } else if (problema.includes('carrega')) {
+      diagnostico = 'Falha no carregamento, podendo ser no conector de carga ou no circuito interno da placa-mãe. Realizamos testes para identificar e resolver o problema.';
+      valor = 'R$ 90 a R$ 350'; prazo = 'Até 1 dia';
+    } else if (problema.includes('sinal')) {
+      diagnostico = 'O aparelho não está reconhecendo sinal de rede. Pode estar relacionado a configurações do sistema ou falhas na placa-mãe. É necessária análise para identificar a causa.';
+      valor = 'R$ 150 a R$ 500'; prazo = '1 a 2 dias';
+    } else if (problema.includes('Wi-Fi')) {
+      diagnostico = 'Problemas no Wi-Fi. Pode ser configuração do sistema, antenas com falhas ou defeito na placa-mãe. É necessária análise mais aprofundada para identificar a causa.';
+      valor = 'R$ 150 a R$ 350'; prazo = '1 a 2 dias';
+    } else if (problema.includes('molhado')) {
+      diagnostico = 'O aparelho teve contato com líquido. É essencial limpeza interna imediata para evitar danos maiores. Neste caso, o tempo é determinante para a recuperação do aparelho.';
+      valor = 'R$ 150 a R$ 400'; prazo = '1 a 3 dias';
+    } else if (problema.includes('câmera')) {
+      diagnostico = 'A câmera apresenta falhas, está embaçada ou inoperante. Pode precisar de substituição para voltar ao funcionamento normal.';
+      valor = 'R$ 150 a R$ 350'; prazo = 'Até 1 dia';
+    } else if (problema.includes('Alto')) {
+      diagnostico = 'O aparelho está com falhas no áudio. Pode ser necessária limpeza ou troca do alto-falante.';
+      valor = 'R$ 50 a R$ 200'; prazo = 'Até 1 dia';
+    }
+  } else {
+    if (problema.includes('bateria')) {
+      diagnostico = 'A bateria do seu iPhone apresenta desgaste natural ou falha, causando descarregamento rápido ou desligamentos inesperados. A substituição resolve o problema e melhora o desempenho do aparelho.';
+      valor = 'R$ 250 a R$ 550'; prazo = '60 a 120 minutos';
+    } else if (problema.includes('tela')) {
+      diagnostico = 'A tela está danificada ou não responde corretamente ao toque. É necessário substituir o display para restaurar a imagem e o funcionamento normal.';
+      valor = 'R$ 250 a R$ 1.350'; prazo = '60 a 120 minutos';
+    } else if (problema.includes('Não liga')) {
+      diagnostico = 'Seu iPhone não está ligando. Isso pode estar relacionado à bateria, ao sistema de carregamento ou até mesmo a curto-circuito na placa-mãe. Realizamos testes para identificar a causa exata e resolver com segurança.';
+      valor = 'R$ 300 a R$ 900'; prazo = '1 a 3 dias';
+    } else if (problema.includes('sinal')) {
+      diagnostico = 'O aparelho não está reconhecendo sinal de rede. Isso pode estar relacionado a configurações, componentes internos ou defeito na placa-mãe. É necessária análise mais aprofundada para identificar a causa.';
+      valor = 'R$ 250 a R$ 600'; prazo = '1 a 2 dias';
+    } else if (problema.includes('Wi-Fi')) {
+      diagnostico = 'Problemas no Wi-Fi. Pode ser configuração do sistema, antenas com falhas ou defeito na placa-mãe. É necessária análise mais aprofundada para identificar a causa.';
+      valor = 'R$ 150 a R$ 350'; prazo = '1 a 2 dias';
+    } else if (problema.includes('molhado')) {
+      diagnostico = 'O aparelho teve contato com líquido, o que pode causar falhas progressivas ou imediatas. É essencial realizar limpeza interna e análise completa para evitar danos maiores.';
+      valor = 'R$ 150 a R$ 600'; prazo = '1 a 3 dias';
+    } else if (problema.includes('Face ID')) {
+      diagnostico = 'O Face ID não está funcionando corretamente. Pode estar relacionado a sensores ou componentes internos. Realizamos análise completa para identificar e corrigir o problema.';
+      valor = 'R$ 300 a R$ 800'; prazo = '1 a 2 dias';
+    } else if (problema.includes('carrega')) {
+      diagnostico = 'O iPhone apresenta falha ao carregar ou conexão instável. Pode estar relacionado ao conector de carga ou a defeito na placa-mãe. É necessária análise mais aprofundada.';
+      valor = 'R$ 250 a R$ 500'; prazo = '1 dia';
+    } else if (problema.includes('câmera')) {
+      diagnostico = 'A câmera apresenta falhas, como imagem embaçada ou sem funcionamento. Pode ser necessário substituir o componente.';
+      valor = 'R$ 250 a R$ 700'; prazo = '1 dia';
+    } else if (problema.includes('Alto')) {
+      diagnostico = 'O som do aparelho está baixo, falhando ou sem funcionar. Pode ser necessária limpeza ou substituição do alto-falante.';
+      valor = 'R$ 150 a R$ 350'; prazo = '1 dia';
+    }
+  }
+
+  // Loading state
+  const btn = document.getElementById('btnSubmit');
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  // Envio para Google Sheets
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify({ nome, telefone, modelo, problema, diagnostico })
+  }).catch(() => {});
+
+  // Delay para dar sensação de processamento
+  setTimeout(() => {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+
+    const mensagem = `Olá! Fiz um diagnóstico no Alpha System:\n\nNome: ${nome}\nWhatsApp: ${telefone}\n\nAparelho: ${modelo}\nProblema: ${problema}${tempo ? '\nHá quanto tempo: ' + tempo : ''}\n\nDiagnóstico: ${diagnostico}\nValor estimado: ${valor}\nPrazo: ${prazo}`;
+    const link = `https://wa.me/55991269300?text=${encodeURIComponent(mensagem)}`;
+
+    const resultado = document.getElementById('resultado');
+    resultado.style.display = 'block';
+    resultado.innerHTML = `
+      <div class="result-label">Diagnóstico</div>
+      <div class="result-value">${diagnostico}</div>
+      <div class="result-row">
+        <div class="result-chip">
+          <div class="result-label">Valor estimado</div>
+          <div class="result-value">${valor}</div>
+        </div>
+        <div class="result-chip">
+          <div class="result-label">Prazo</div>
+          <div class="result-value">${prazo}</div>
+        </div>
+      </div>
+      <a class="btn-whatsapp" href="${link}" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Falar no WhatsApp
+      </a>
+    `;
+
+    resultado.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 900);
+}
+
+// Inicializa
+preencherProblemas(PROBLEMAS_IPHONE);
+verificarProblema();
+
+// Remove erro ao digitar
+document.getElementById('nome').addEventListener('input', function() {
+  this.classList.remove('error');
+  document.getElementById('erro').classList.remove('visible');
+});
+document.getElementById('telefone').addEventListener('input', function() {
+  this.classList.remove('error');
+  document.getElementById('erro').classList.remove('visible');
+});
 </script>
-
 </body>
 </html>
