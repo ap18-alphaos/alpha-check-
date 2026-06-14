@@ -191,7 +191,7 @@
     margin-bottom: 7px;
   }
 
-  input, select {
+  input, select, textarea {
     width: 100%;
     padding: 13px 16px;
     background: var(--surface2);
@@ -206,6 +206,8 @@
     -webkit-appearance: none;
   }
 
+  textarea { resize: vertical; min-height: 60px; line-height: 1.5; }
+
   select {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7a8a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
@@ -214,15 +216,58 @@
     cursor: pointer;
   }
 
-  input::placeholder { color: var(--text-dim); }
+  input::placeholder, textarea::placeholder { color: var(--text-dim); }
 
-  input:focus, select:focus {
+  input:focus, select:focus, textarea:focus {
     border-color: var(--blue);
     background: #12121a;
     box-shadow: 0 0 0 3px rgba(0,170,255,0.1);
   }
 
   input.error { border-color: var(--red); box-shadow: 0 0 0 3px rgba(255,77,106,0.1); }
+
+  .perguntas-wrap { margin-bottom: 16px; }
+
+  .pergunta-bloco {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+
+  .pergunta-origem {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+
+  .pergunta-label { font-size: 12.5px; color: var(--text); margin: 8px 0 6px; }
+
+  .pergunta-opts { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .pergunta-opt {
+    padding: 6px 11px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    color: var(--text-muted);
+    font-size: 11.5px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .pergunta-opt:hover { border-color: var(--border-hover); color: var(--text); }
+
+  .pergunta-opt.active {
+    background: var(--blue-dim);
+    border-color: var(--blue);
+    color: var(--blue);
+  }
 
   .device-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
 
@@ -702,14 +747,20 @@
         </select>
       </div>
 
-      <div id="androidCampos" style="display:none;" class="form-group">
-        <label for="marca">Marca</label>
-        <select id="marca">
-          <option>Samsung</option>
-          <option>Xiaomi</option>
-          <option>Motorola</option>
-          <option>Outro</option>
-        </select>
+      <div id="androidCampos" style="display:none;">
+        <div class="form-group">
+          <label for="marca">Marca</label>
+          <select id="marca">
+            <option>Samsung</option>
+            <option>Xiaomi</option>
+            <option>Motorola</option>
+            <option>Outro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="modeloAndroid">Modelo do aparelho</label>
+          <input type="text" id="modeloAndroid" placeholder="Ex: Galaxy S21, Redmi Note 12">
+        </div>
       </div>
 
       <div class="form-group">
@@ -718,6 +769,13 @@
           <small>Selecione um ou mais</small>
         </div>
         <div class="problems-grid" id="problemasGrid"></div>
+      </div>
+
+      <div class="perguntas-wrap" id="perguntasContainer"></div>
+
+      <div class="form-group">
+        <label for="outroProblema">Outro problema ou defeito (opcional)</label>
+        <textarea id="outroProblema" rows="2" placeholder="Descreva qualquer outro defeito. Ex: tela com manchas verdes ou listras, reinicia sozinho..."></textarea>
       </div>
 
       <div class="field-collapsible" id="campoTempo">
@@ -784,6 +842,7 @@ function salvarLeadSupabase(dados) {
 
 let tipoAtual = 'iphone';
 let problemasSelecionados = new Set();
+let respostas = {};
 
 const PROBLEMAS_IPHONE = [
   'Troca de bateria','Troca de tela','Não liga','Sem sinal de rede',
@@ -813,14 +872,17 @@ animarContador();
 function setTipo(tipo) {
   tipoAtual = tipo;
   problemasSelecionados.clear();
+  respostas = {};
   document.getElementById('btn-iphone').classList.toggle('active', tipo === 'iphone');
   document.getElementById('btn-android').classList.toggle('active', tipo === 'android');
   document.getElementById('iphoneCampos').style.display = tipo === 'iphone' ? 'block' : 'none';
   document.getElementById('androidCampos').style.display = tipo === 'android' ? 'block' : 'none';
   renderProblemas(tipo === 'iphone' ? PROBLEMAS_IPHONE : PROBLEMAS_ANDROID);
+  renderPerguntas();
   document.getElementById('resultado').style.display = 'none';
   document.getElementById('resultado').innerHTML = '';
   document.getElementById('tempo').value = '';
+  document.getElementById('outroProblema').value = '';
   verificarTempo();
 }
 
@@ -836,11 +898,13 @@ function toggleProblema(el, p) {
   if (problemasSelecionados.has(p)) {
     problemasSelecionados.delete(p);
     el.classList.remove('selected');
+    Object.keys(respostas).forEach(k => { if (k.startsWith(p + '||')) delete respostas[k]; });
   } else {
     problemasSelecionados.add(p);
     el.classList.add('selected');
   }
   verificarTempo();
+  renderPerguntas();
 }
 
 function verificarTempo() {
@@ -851,6 +915,78 @@ function verificarTempo() {
   } else {
     campo.classList.remove('visible');
   }
+}
+
+function perguntasDoProblema(p) {
+  if (p.includes('Não liga')) return [
+    { q:'A tela chega a dar algum sinal?', opts:['Aparece a maçã','Pisca e apaga','Nada, apagada'] },
+    { q:'Esquenta ao conectar o carregador?', opts:['Sim','Não'] }
+  ];
+  if (p.includes('carrega')) return [
+    { q:'Carrega em algum cabo?', opts:['Nenhum','Só alguns cabos','Só forçando o cabo'] },
+    { q:'Aparece o raio mas a % não sobe?', opts:['Sim','Não'] }
+  ];
+  if (p.includes('molhado')) return [
+    { q:'Há quanto tempo molhou?', opts:['Hoje','Alguns dias','Mais de uma semana'] },
+    { q:'Ainda dá sinal de vida?', opts:['Liga normal','Liga com falhas','Não liga'] }
+  ];
+  if (p.includes('Face ID')) return [
+    { q:'Teve troca de tela, queda ou molhou antes?', opts:['Sim','Não'] }
+  ];
+  if (p.includes('tela')) return [
+    { q:'O toque ainda responde?', opts:['Sim','Não','Em partes'] },
+    { q:'Como está a imagem?', opts:['Só o vidro trincou','Manchas ou listras','Tela preta'] }
+  ];
+  if (p.includes('bateria')) return [
+    { q:'Saúde da bateria?', opts:['Acima de 80%','70–79%','Abaixo de 70%','Não sei'] },
+    { q:'Desliga sozinho mesmo com carga?', opts:['Sim','Não'] }
+  ];
+  if (p.includes('sinal') || p.includes('Wi-Fi')) return [
+    { q:'Começou depois de quê?', opts:['Atualização','Queda ou molhou','Do nada'] }
+  ];
+  if (p.includes('câmera')) return [
+    { q:'Qual câmera e o que acontece?', opts:['Traseira embaçada','Frontal','App fecha / tela preta'] }
+  ];
+  return [];
+}
+
+function renderPerguntas() {
+  const cont = document.getElementById('perguntasContainer');
+  let html = '';
+  [...problemasSelecionados].forEach(prob => {
+    const qs = perguntasDoProblema(prob);
+    if (!qs.length) return;
+    html += `<div class="pergunta-bloco"><div class="pergunta-origem">${prob}</div>`;
+    qs.forEach((item, qi) => {
+      html += `<div class="pergunta-label">${item.q}</div><div class="pergunta-opts">`;
+      item.opts.forEach(opt => {
+        const active = respostas[prob + '||' + qi] === opt ? ' active' : '';
+        html += `<div class="pergunta-opt${active}" onclick="selecionarResposta(this,'${prob}',${qi},'${opt}')">${opt}</div>`;
+      });
+      html += `</div>`;
+    });
+    html += `</div>`;
+  });
+  cont.innerHTML = html;
+}
+
+function selecionarResposta(el, prob, qi, opt) {
+  respostas[prob + '||' + qi] = opt;
+  el.parentElement.querySelectorAll('.pergunta-opt').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function respostasDoProblema(p) {
+  const out = [];
+  perguntasDoProblema(p).forEach((item, qi) => {
+    const ans = respostas[p + '||' + qi];
+    if (ans) out.push(item.q + ' ' + ans);
+  });
+  return out;
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
 }
 
 document.getElementById('telefone').addEventListener('input', function(e) {
@@ -952,7 +1088,8 @@ function gerarDiagnostico() {
     return;
   }
 
-  if (problemasSelecionados.size === 0) {
+  const outro = document.getElementById('outroProblema').value.trim();
+  if (problemasSelecionados.size === 0 && !outro) {
     const grid = document.getElementById('problemasGrid');
     grid.style.outline = '1.5px solid var(--red)';
     grid.style.borderRadius = '8px';
@@ -964,9 +1101,10 @@ function gerarDiagnostico() {
   document.getElementById('nome').classList.remove('error');
   document.getElementById('telefone').classList.remove('error');
 
+  const modeloAndroidVal = document.getElementById('modeloAndroid').value.trim();
   const modelo = tipoAtual === 'iphone'
     ? document.getElementById('modelo').value
-    : document.getElementById('marca').value;
+    : (document.getElementById('marca').value + (modeloAndroidVal ? ' ' + modeloAndroidVal : ''));
   const tempo = document.getElementById('tempo').value;
   const problemasArr = [...problemasSelecionados];
 
@@ -982,29 +1120,38 @@ function gerarDiagnostico() {
     document.getElementById('confirmOverlay').classList.add('visible');
 
     const diagnosticos = problemasArr
-      .map(p => ({ p, info: aplicarPrecoModelo(getDiag(p, tipoAtual), p, tipoAtual, modelo) }))
+      .map(p => ({ p, info: aplicarPrecoModelo(getDiag(p, tipoAtual), p, tipoAtual, modelo), det: respostasDoProblema(p) }))
       .filter(x => x.info);
-    const diagTexto = diagnosticos.map(d => d.info.d).join(' | ');
+
+    const linhasResumo = diagnosticos.map(({ p, det }) => p + (det.length ? ' — ' + det.join('; ') : ''));
+    if (outro) linhasResumo.push('Outro defeito relatado: ' + outro);
+    const resumoTexto = linhasResumo.join(' | ');
+
+    const problemasLista = [...problemasArr];
+    if (outro) problemasLista.push('Outro defeito');
+    const problemasField = problemasLista.join(', ');
 
     let sendOk = null;
     fetch(SCRIPT_URL, {
       method: 'POST',
-      body: JSON.stringify({ nome, telefone, modelo, problema: problemasArr.join(', '), diagnostico: diagTexto })
+      body: JSON.stringify({ nome, telefone, modelo, problema: problemasField, diagnostico: resumoTexto })
     }).then(() => { sendOk = true; }).catch(() => { sendOk = false; });
 
     salvarLeadSupabase({
       nome, telefone, tipo: tipoAtual, modelo,
-      problemas: problemasArr.join(', '), diagnostico: diagTexto
+      problemas: problemasField, diagnostico: resumoTexto
     }).catch(() => {});
 
     setTimeout(() => {
       document.getElementById('confirmOverlay').classList.remove('visible');
       document.getElementById('confirmOverlay').style.display = 'none';
 
-      const msgItens = problemasArr.map((p, i) => {
-        const info = aplicarPrecoModelo(getDiag(p, tipoAtual), p, tipoAtual, modelo);
-        return info ? `*${i+1}. ${p}*\n${info.d}\nValor: ${info.v} | Prazo: ${info.pr}` : `*${p}*`;
+      let msgItens = diagnosticos.map(({ p, info, det }, i) => {
+        let bloco = `*${i+1}. ${p}*\n${info.d}\nValor: ${info.v} | Prazo: ${info.pr}`;
+        if (det.length) bloco += `\nDetalhes: ${det.join('; ')}`;
+        return bloco;
       }).join('\n\n');
+      if (outro) msgItens += (msgItens ? '\n\n' : '') + `*Outro defeito:*\n${outro}`;
 
       const mensagem = `Olá! Fiz um diagnóstico no Alpha System:\n\nNome: ${nome}\nWhatsApp: ${telefone}\nAparelho: ${modelo}${tempo ? '\nHá quanto tempo: ' + tempo : ''}\n\n${msgItens}`;
       const link = `https://wa.me/55991269300?text=${encodeURIComponent(mensagem)}`;
@@ -1013,11 +1160,11 @@ function gerarDiagnostico() {
         ? 'Estamos em horário de atendimento — resposta em até 30 minutos.'
         : 'Fora do horário comercial. Atendemos seg–sáb, das 9h às 18h.';
 
-      const itensHTML = diagnosticos.length > 0
-        ? diagnosticos.map(({ p, info }) => `
+      let itensHTML = diagnosticos.map(({ p, info, det }) => `
             <div class="problema-bloco">
               <div class="result-label">${p}</div>
               <div class="result-value">${info.d}</div>
+              ${det.length ? `<div class="result-value" style="font-size:12px;color:var(--text-muted)">${det.join(' · ')}</div>` : ''}
               <div class="result-row">
                 <div class="result-chip">
                   <div class="result-label">Valor estimado</div>
@@ -1029,8 +1176,14 @@ function gerarDiagnostico() {
                 </div>
               </div>
             </div>
-          `).join('')
-        : '<div class="result-value">Entre em contato para mais detalhes.</div>';
+          `).join('');
+      if (outro) itensHTML += `
+            <div class="problema-bloco">
+              <div class="result-label">Outro defeito relatado</div>
+              <div class="result-value">${esc(outro)}</div>
+              <div class="result-value" style="font-size:12px;color:var(--text-muted)">Vamos analisar e te passar o orçamento certo no WhatsApp.</div>
+            </div>`;
+      if (!itensHTML) itensHTML = '<div class="result-value">Entre em contato para mais detalhes.</div>';
 
       const resultado = document.getElementById('resultado');
       resultado.style.display = 'block';
@@ -1058,6 +1211,7 @@ function gerarDiagnostico() {
 
 function resetar() {
   problemasSelecionados.clear();
+  respostas = {};
   document.getElementById('resultado').style.display = 'none';
   document.getElementById('resultado').innerHTML = '';
   document.getElementById('confirmOverlay').style.display = '';
@@ -1066,8 +1220,11 @@ function resetar() {
   document.getElementById('nome').value = '';
   document.getElementById('telefone').value = '';
   document.getElementById('tempo').value = '';
+  document.getElementById('outroProblema').value = '';
+  document.getElementById('modeloAndroid').value = '';
   document.getElementById('erro').classList.remove('visible');
   renderProblemas(tipoAtual === 'iphone' ? PROBLEMAS_IPHONE : PROBLEMAS_ANDROID);
+  renderPerguntas();
   verificarTempo();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
