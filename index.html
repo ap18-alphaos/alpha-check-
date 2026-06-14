@@ -867,6 +867,48 @@ document.getElementById('telefone').addEventListener('input', function(e) {
   e.target.value = v;
 });
 
+const PRECOS_IPHONE = {
+  'iPhone SE (1ª geração)': { tela: 'R$ 250', bateria: 'R$ 200' },
+  'iPhone SE (2ª geração)': { tela: 'R$ 300', bateria: 'R$ 200' },
+  'iPhone SE (3ª geração)': { tela: 'R$ 300', bateria: 'R$ 200' },
+  'iPhone X':            { tela: 'R$ 400', bateria: 'R$ 250' },
+  'iPhone XR':           { tela: 'R$ 400', bateria: 'R$ 250' },
+  'iPhone XS':           { tela: 'R$ 400', bateria: 'R$ 250' },
+  'iPhone XS Max':       { tela: 'R$ 400', bateria: 'R$ 250' },
+  'iPhone 11':           { tela: 'R$ 450', bateria: 'R$ 250' },
+  'iPhone 11 Pro':       { tela: 'R$ 500', bateria: 'R$ 300' },
+  'iPhone 11 Pro Max':   { tela: 'R$ 500', bateria: 'R$ 300' },
+  'iPhone 12 mini':      { tela: 'R$ 550', bateria: 'R$ 350' },
+  'iPhone 12':           { tela: 'R$ 550', bateria: 'R$ 350' },
+  'iPhone 12 Pro':       { tela: 'R$ 550', bateria: 'R$ 350' },
+  'iPhone 12 Pro Max':   { tela: 'R$ 600', bateria: 'R$ 350' },
+  'iPhone 13 mini':      { tela: 'R$ 850', bateria: 'R$ 400' },
+  'iPhone 13':           { tela: 'R$ 850', bateria: 'R$ 400' },
+  'iPhone 13 Pro':       { tela: 'R$ 1.200', bateria: 'R$ 450' },
+  'iPhone 13 Pro Max':   { tela: 'R$ 1.200', bateria: 'R$ 450' },
+  'iPhone 14':           { tela: 'R$ 850', bateria: 'R$ 400' },
+  'iPhone 14 Plus':      { tela: 'R$ 850', bateria: 'R$ 400' },
+  'iPhone 14 Pro':       { tela: 'R$ 1.250', bateria: 'R$ 450' },
+  'iPhone 14 Pro Max':   { tela: 'R$ 1.250', bateria: 'R$ 450' },
+  'iPhone 15':           { tela: 'R$ 950', bateria: 'R$ 450' },
+  'iPhone 15 Plus':      { tela: 'R$ 950', bateria: 'R$ 450' },
+  'iPhone 15 Pro':       { tela: 'R$ 1.550', bateria: 'R$ 450' },
+  'iPhone 15 Pro Max':   { tela: 'R$ 1.550', bateria: 'R$ 450' },
+  'iPhone 16':           { tela: 'R$ 1.200', bateria: 'R$ 450' },
+  'iPhone 16 Plus':      { tela: 'R$ 1.200', bateria: 'R$ 450' },
+  'iPhone 16 Pro':       { tela: 'R$ 1.850', bateria: 'R$ 450' },
+  'iPhone 16 Pro Max':   { tela: 'R$ 1.850', bateria: 'R$ 450' }
+};
+
+function aplicarPrecoModelo(info, p, tipo, modelo) {
+  if (!info || tipo !== 'iphone' || !modelo) return info;
+  const precos = PRECOS_IPHONE[modelo];
+  if (!precos) return info;
+  if (p.includes('tela') && precos.tela)       return { ...info, v: precos.tela };
+  if (p.includes('bateria') && precos.bateria) return { ...info, v: precos.bateria };
+  return info;
+}
+
 function getDiag(p, tipo) {
   if (tipo === 'android') {
     if (p.includes('bateria'))  return { d:'A bateria do aparelho pode estar desgastada, causando descarga rápida ou desligamentos inesperados. A substituição resolve o problema e melhora o desempenho.', v:'R$ 150 a R$ 300', pr:'Até 1 hora' };
@@ -939,8 +981,10 @@ function gerarDiagnostico() {
     document.getElementById('formSection').style.display = 'none';
     document.getElementById('confirmOverlay').classList.add('visible');
 
-    const diagnosticos = problemasArr.map(p => getDiag(p, tipoAtual)).filter(Boolean);
-    const diagTexto = diagnosticos.map(d => d.d).join(' | ');
+    const diagnosticos = problemasArr
+      .map(p => ({ p, info: aplicarPrecoModelo(getDiag(p, tipoAtual), p, tipoAtual, modelo) }))
+      .filter(x => x.info);
+    const diagTexto = diagnosticos.map(d => d.info.d).join(' | ');
 
     let sendOk = null;
     fetch(SCRIPT_URL, {
@@ -958,7 +1002,7 @@ function gerarDiagnostico() {
       document.getElementById('confirmOverlay').style.display = 'none';
 
       const msgItens = problemasArr.map((p, i) => {
-        const info = getDiag(p, tipoAtual);
+        const info = aplicarPrecoModelo(getDiag(p, tipoAtual), p, tipoAtual, modelo);
         return info ? `*${i+1}. ${p}*\n${info.d}\nValor: ${info.v} | Prazo: ${info.pr}` : `*${p}*`;
       }).join('\n\n');
 
@@ -970,9 +1014,9 @@ function gerarDiagnostico() {
         : 'Fora do horário comercial. Atendemos seg–sáb, das 9h às 18h.';
 
       const itensHTML = diagnosticos.length > 0
-        ? diagnosticos.map((info, i) => `
+        ? diagnosticos.map(({ p, info }) => `
             <div class="problema-bloco">
-              <div class="result-label">${problemasArr[i]}</div>
+              <div class="result-label">${p}</div>
               <div class="result-value">${info.d}</div>
               <div class="result-row">
                 <div class="result-chip">
