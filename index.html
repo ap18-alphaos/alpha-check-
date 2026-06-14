@@ -766,6 +766,22 @@
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYVp0UBoKy9eiPNdUePPsUZr-i2aIm9qL4NYgBwVvb8ictv3Umkdy5K4dOd73KlAFg/exec";
 
+const SUPABASE_URL = "https://fyaikiqpayijjnewsscn.supabase.co";
+const SUPABASE_KEY = "sb_publishable_DJ2t2A6F1uL0E1_sWQh1tg_d8-HUVfx";
+
+function salvarLeadSupabase(dados) {
+  return fetch(`${SUPABASE_URL}/rest/v1/diagnosticos`, {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify(dados)
+  });
+}
+
 let tipoAtual = 'iphone';
 let problemasSelecionados = new Set();
 
@@ -931,6 +947,11 @@ function gerarDiagnostico() {
       method: 'POST',
       body: JSON.stringify({ nome, telefone, modelo, problema: problemasArr.join(', '), diagnostico: diagTexto })
     }).then(() => { sendOk = true; }).catch(() => { sendOk = false; });
+
+    salvarLeadSupabase({
+      nome, telefone, tipo: tipoAtual, modelo,
+      problemas: problemasArr.join(', '), diagnostico: diagTexto
+    }).catch(() => {});
 
     setTimeout(() => {
       document.getElementById('confirmOverlay').classList.remove('visible');
