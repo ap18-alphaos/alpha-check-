@@ -903,8 +903,8 @@ function animarContador() {
     }
   }).then(r => {
     const total = parseInt(r.headers.get('content-range')?.split('/')[1] || '0');
-    const exibir = Math.max(CONTADOR_BASE, total);
-    if (exibir > CONTADOR_BASE) el.textContent = exibir;
+    const exibir = CONTADOR_BASE + total;
+    el.textContent = exibir;
   }).catch(() => {});
 }
 animarContador();
