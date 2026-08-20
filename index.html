@@ -43,6 +43,10 @@
   <div class="card">
 
     <div id="formSection">
+      <div style="position:absolute;left:-9999px;top:-9999px;opacity:0;height:0;width:0;overflow:hidden;" aria-hidden="true">
+        <label for="assuntoContato">Não preencher este campo</label>
+        <input type="text" id="assuntoContato" name="assuntoContato" tabindex="-1" autocomplete="off">
+      </div>
       <div class="form-row">
         <div class="form-group">
           <label for="nome">Seu nome</label>
@@ -59,7 +63,7 @@
           <circle cx="6" cy="6" r="5.5" stroke="#ff4d6a"/>
           <path d="M6 3.5v3M6 8h.01" stroke="#ff4d6a" stroke-width="1.2" stroke-linecap="round"/>
         </svg>
-        Preencha nome e WhatsApp para continuar
+        <span id="erroTexto">Preencha nome e WhatsApp para continuar</span>
       </div>
 
       <div class="divider"></div>

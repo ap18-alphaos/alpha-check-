@@ -5,8 +5,24 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const CONTADOR_BASE = 350;
 
+async function postComRetry(url, options, tentativas = 2) {
+  for (let i = 0; i < tentativas; i++) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    try {
+      await fetch(url, { ...options, signal: controller.signal });
+      return true;
+    } catch (e) {
+      if (i < tentativas - 1) await new Promise(r => setTimeout(r, 1000));
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+  return false;
+}
+
 function salvarLeadSupabase(dados) {
-  return fetch(`${SUPABASE_URL}/rest/v1/diagnosticos`, {
+  return postComRetry(`${SUPABASE_URL}/rest/v1/diagnosticos`, {
     method: 'POST',
     headers: {
       'apikey': SUPABASE_KEY,
@@ -365,12 +381,26 @@ function isHorarioComercial() {
   return d >= 1 && d <= 6 && h >= 9 && h < 18;
 }
 
+const REENVIO_MIN_MS = 30000;
+
 function gerarDiagnostico() {
+  if (document.getElementById('assuntoContato').value.trim()) return;
+
+  const erroEl = document.getElementById('erro');
+  const erroTextoEl = document.getElementById('erroTexto');
+
+  const ultimoEnvio = Number(localStorage.getItem('alpha_ultimo_envio') || 0);
+  if (Date.now() - ultimoEnvio < REENVIO_MIN_MS) {
+    erroTextoEl.textContent = 'Aguarde alguns segundos antes de enviar outro diagnóstico.';
+    erroEl.classList.add('visible');
+    return;
+  }
+
   const nome = document.getElementById('nome').value.trim();
   const telefone = document.getElementById('telefone').value.trim();
-  const erroEl = document.getElementById('erro');
 
   if (!nome || telefone.replace(/\D/g,'').length < 10) {
+    erroTextoEl.textContent = 'Preencha nome e WhatsApp para continuar';
     erroEl.classList.add('visible');
     if (!nome) document.getElementById('nome').classList.add('error');
     if (telefone.replace(/\D/g,'').length < 10) document.getElementById('telefone').classList.add('error');
@@ -398,6 +428,8 @@ function gerarDiagnostico() {
   const problemasArr = [...problemasSelecionados];
   const primeiroNome = nome.split(' ')[0];
 
+  localStorage.setItem('alpha_ultimo_envio', String(Date.now()));
+
   const btn = document.getElementById('btnSubmit');
   btn.classList.add('loading');
   btn.disabled = true;
@@ -423,16 +455,17 @@ function gerarDiagnostico() {
     if (outro) problemasLista.push('Outro defeito');
     const problemasField = problemasLista.join(', ');
 
-    let sendOk = null;
-    fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({ nome, telefone, modelo, problema: problemasField, diagnostico: resumoTexto, foto: fotoUrl || '' })
-    }).then(() => { sendOk = true; }).catch(() => { sendOk = false; });
-
-    salvarLeadSupabase({
-      nome, telefone, tipo: tipoAtual, modelo,
-      problemas: problemasField, diagnostico: resumoTexto, foto_url: fotoUrl
-    }).catch(() => {});
+    const [, supabaseOk] = await Promise.all([
+      postComRetry(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ nome, telefone, modelo, problema: problemasField, diagnostico: resumoTexto, foto: fotoUrl || '' })
+      }),
+      salvarLeadSupabase({
+        nome, telefone, tipo: tipoAtual, modelo,
+        problemas: problemasField, diagnostico: resumoTexto, foto_url: fotoUrl
+      })
+    ]);
+    const sendOk = supabaseOk;
 
     setTimeout(() => {
       document.getElementById('confirmOverlay').classList.remove('visible');
