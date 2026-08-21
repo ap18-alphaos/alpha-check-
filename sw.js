@@ -1,5 +1,5 @@
-const CACHE = 'alpha-v2';
-const ASSETS = ['/index.html', '/manifest.json', '/icon-192.png', '/icon-512.png'];
+const CACHE = 'alpha-v3';
+const ASSETS = ['/index.html', '/styles.css', '/app.js', '/manifest.json', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
@@ -34,6 +34,18 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Demais arquivos (ícones, manifest, fontes): cache primeiro
-  e.respondWith(caches.match(req).then(cached => cached || fetch(req)));
+  // Demais arquivos (CSS, JS, ícones, manifest): cache primeiro, mas atualiza
+  // o cache em segundo plano a cada visita (stale-while-revalidate) — assim
+  // deploys futuros de app.js/styles.css chegam sem depender de bump manual do CACHE.
+  e.respondWith(
+    caches.match(req).then(cached => {
+      const emBackground = fetch(req)
+        .then(res => {
+          caches.open(CACHE).then(c => c.put(req, res.clone()));
+          return res;
+        })
+        .catch(() => cached);
+      return cached || emBackground;
+    })
+  );
 });

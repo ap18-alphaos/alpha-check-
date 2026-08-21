@@ -10,13 +10,15 @@ async function postComRetry(url, options, tentativas = 2) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 8000);
     try {
-      await fetch(url, { ...options, signal: controller.signal });
-      return true;
+      const res = await fetch(url, { ...options, signal: controller.signal });
+      // resposta 'opaque' (ex: cross-origin sem CORS) nao pode ser inspecionada — trata como sucesso
+      if (res.type === 'opaque' || res.ok) return true;
     } catch (e) {
-      if (i < tentativas - 1) await new Promise(r => setTimeout(r, 1000));
+      // erro de rede/timeout — tenta de novo
     } finally {
       clearTimeout(timeoutId);
     }
+    if (i < tentativas - 1) await new Promise(r => setTimeout(r, 1000));
   }
   return false;
 }
