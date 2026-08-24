@@ -153,9 +153,9 @@ function setTipo(tipo) {
 
 function renderProblemas(lista) {
   document.getElementById('problemasGrid').innerHTML = lista.map(p => `
-    <div class="problem-chip" onclick="toggleProblema(this,'${p}')">
+    <button type="button" class="problem-chip" aria-pressed="false" onclick="toggleProblema(this,'${p}')">
       <div class="chip-check"></div>${p}
-    </div>
+    </button>
   `).join('');
 }
 
@@ -163,10 +163,12 @@ function toggleProblema(el, p) {
   if (problemasSelecionados.has(p)) {
     problemasSelecionados.delete(p);
     el.classList.remove('selected');
+    el.setAttribute('aria-pressed', 'false');
     Object.keys(respostas).forEach(k => { if (k.startsWith(p + '||')) delete respostas[k]; });
   } else {
     problemasSelecionados.add(p);
     el.classList.add('selected');
+    el.setAttribute('aria-pressed', 'true');
   }
   verificarTempo();
   renderPerguntas();
@@ -542,6 +544,7 @@ function gerarDiagnostico() {
       `;
 
       resultado.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      resultado.focus({ preventScroll: true });
     }, 1800);
   }, 900);
 }
