@@ -321,7 +321,9 @@ document.getElementById('telefone').addEventListener('input', function(e) {
 });
 
 // Preços por modelo — tela: Premium | tela_original: Original
-const PRECOS_IPHONE = {
+// Valores de fallback: usados se a busca em precos_diagnostico falhar (rede indisponível).
+// A tabela no Supabase é a fonte de verdade — editar preço lá não exige deploy.
+const PRECOS_IPHONE_FALLBACK = {
   'iPhone SE (1ª geração)': { tela: 'R$ 250',   tela_original: 'R$ 450',   bateria: 'R$ 200' },
   'iPhone SE (2ª geração)': { tela: 'R$ 300',   tela_original: 'R$ 500',   bateria: 'R$ 200' },
   'iPhone SE (3ª geração)': { tela: 'R$ 300',   tela_original: 'R$ 500',   bateria: 'R$ 200' },
@@ -354,6 +356,70 @@ const PRECOS_IPHONE = {
   'iPhone 16 Pro Max':      { tela: 'R$ 1.850', tela_original: 'R$ 2.800', bateria: 'R$ 450' }
 };
 
+// Preços em uso: começam como o fallback e sao sobrescritos por carregarPrecos()
+// se a tabela precos_diagnostico (Supabase) responder a tempo.
+let PRECOS_IPHONE = Object.fromEntries(
+  Object.entries(PRECOS_IPHONE_FALLBACK).map(([modelo, campos]) => [modelo, { ...campos }])
+);
+let PRECOS_PADRAO_OVERRIDE = {};
+
+function chavePreco(p, tipo) {
+  if (tipo === 'android') {
+    if (p.includes('bateria')) return 'bateria';
+    if (p.includes('Troca de tela')) return 'tela';
+    if (p.includes('Não liga')) return 'nao_liga';
+    if (p.includes('carrega')) return 'carrega';
+    if (p.includes('sinal')) return 'sinal';
+    if (p.includes('Wi-Fi')) return 'wifi';
+    if (p.includes('molhado')) return 'molhado';
+    if (p.includes('câmera')) return 'camera';
+    if (p.includes('Alto')) return 'alto_falante';
+  } else {
+    if (p.includes('bateria')) return 'bateria';
+    if (p === 'Tela Premium') return 'tela_premium';
+    if (p === 'Tela Original') return 'tela_original';
+    if (p.includes('Não liga')) return 'nao_liga';
+    if (p.includes('sinal')) return 'sinal';
+    if (p.includes('Wi-Fi')) return 'wifi';
+    if (p.includes('molhado')) return 'molhado';
+    if (p.includes('Face ID')) return 'face_id';
+    if (p.includes('Touch ID')) return 'touch_id';
+    if (p.includes('carrega')) return 'carrega';
+    if (p.includes('câmera')) return 'camera';
+    if (p.includes('Alto')) return 'alto_falante';
+  }
+  return null;
+}
+
+async function carregarPrecos() {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 5000);
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/precos_diagnostico?select=tipo,modelo,problema,valor`, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+      signal: controller.signal
+    });
+    if (!res.ok) return;
+    const linhas = await res.json();
+    const CAMPO_POR_PROBLEMA = { tela_premium: 'tela', tela_original: 'tela_original', bateria: 'bateria' };
+    for (const linha of linhas) {
+      if (linha.modelo) {
+        const campo = CAMPO_POR_PROBLEMA[linha.problema];
+        if (!campo) continue;
+        if (!PRECOS_IPHONE[linha.modelo]) PRECOS_IPHONE[linha.modelo] = {};
+        PRECOS_IPHONE[linha.modelo][campo] = linha.valor;
+      } else {
+        PRECOS_PADRAO_OVERRIDE[`${linha.tipo}|${linha.problema}`] = linha.valor;
+      }
+    }
+  } catch (e) {
+    // sem internet ou tabela indisponivel — segue com o fallback ja carregado
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+const precosProntos = carregarPrecos();
+
 function aplicarPrecoModelo(info, p, tipo, modelo) {
   if (!info || tipo !== 'iphone' || !modelo) return info;
   const precos = PRECOS_IPHONE[modelo];
@@ -365,6 +431,14 @@ function aplicarPrecoModelo(info, p, tipo, modelo) {
 }
 
 function getDiag(p, tipo) {
+  const info = getDiagBase(p, tipo);
+  if (!info) return info;
+  const chave = chavePreco(p, tipo);
+  const valorPadrao = chave && PRECOS_PADRAO_OVERRIDE[`${tipo}|${chave}`];
+  return valorPadrao ? { ...info, v: valorPadrao } : info;
+}
+
+function getDiagBase(p, tipo) {
   if (tipo === 'android') {
     if (p.includes('bateria'))       return { d:'A bateria do aparelho pode estar desgastada, causando descarga rápida ou desligamentos inesperados. A substituição resolve o problema e melhora o desempenho.', v:'R$ 150 a R$ 300', pr:'Até 1 hora' };
     if (p.includes('Troca de tela')) return { d:'A tela está danificada ou trincada, podendo comprometer o uso do aparelho. A substituição é necessária para restaurar o funcionamento e a estética.', v:'R$ 250 a R$ 750', pr:'De 1 a 3 horas' };
@@ -459,6 +533,7 @@ function gerarDiagnostico() {
     document.getElementById('confirmOverlay').classList.add('visible');
 
     const fotoUrl = fotoArquivo ? await uploadFotoSupabase(fotoArquivo) : null;
+    await precosProntos;
 
     const diagnosticos = problemasArr
       .map(p => ({ p, info: aplicarPrecoModelo(getDiag(p, tipoAtual), p, tipoAtual, modelo), det: respostasDoProblema(p) }))
