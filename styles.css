@@ -650,6 +650,17 @@
 
   .btn-reset:hover { border-color: var(--border-hover); color: var(--text); }
 
+  .privacidade-nota {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: center;
+    line-height: 1.6;
+    margin: 4px 0 12px;
+  }
+
+  .privacidade-nota a { color: var(--text-muted); text-decoration: underline; }
+  .privacidade-nota a:hover { color: var(--blue); }
+
   .seo-text {
     margin-top: 16px;
     font-size: 11px;
