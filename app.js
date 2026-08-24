@@ -402,12 +402,13 @@ function gerarDiagnostico() {
 
   const nome = document.getElementById('nome').value.trim();
   const telefone = document.getElementById('telefone').value.trim();
+  const telefoneDigits = telefone.replace(/\D/g, '');
 
-  if (!nome || telefone.replace(/\D/g,'').length < 10) {
+  if (!nome || telefoneDigits.length < 10) {
     erroTextoEl.textContent = 'Preencha nome e WhatsApp para continuar';
     erroEl.classList.add('visible');
     if (!nome) document.getElementById('nome').classList.add('error');
-    if (telefone.replace(/\D/g,'').length < 10) document.getElementById('telefone').classList.add('error');
+    if (telefoneDigits.length < 10) document.getElementById('telefone').classList.add('error');
     return;
   }
 
@@ -462,10 +463,10 @@ function gerarDiagnostico() {
     const [, supabaseOk] = await Promise.all([
       postComRetry(SCRIPT_URL, {
         method: 'POST',
-        body: JSON.stringify({ nome, telefone, modelo, problema: problemasField, diagnostico: resumoTexto, foto: fotoUrl || '' })
+        body: JSON.stringify({ nome, telefone: telefoneDigits, modelo, problema: problemasField, diagnostico: resumoTexto, foto: fotoUrl || '' })
       }),
       salvarLeadSupabase({
-        nome, telefone, tipo: tipoAtual, modelo,
+        nome, telefone: telefoneDigits, tipo: tipoAtual, modelo,
         problemas: problemasField, diagnostico: resumoTexto, foto_url: fotoUrl
       })
     ]);
