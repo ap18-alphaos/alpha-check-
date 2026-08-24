@@ -137,7 +137,7 @@
       <div id="androidCampos" style="display:none;">
         <div class="form-group">
           <label for="marca">Marca</label>
-          <select id="marca">
+          <select id="marca" onchange="atualizarListaModelos()">
             <option>Samsung</option>
             <option>Xiaomi</option>
             <option>Motorola</option>
@@ -146,7 +146,46 @@
         </div>
         <div class="form-group">
           <label for="modeloAndroid">Modelo do aparelho</label>
-          <input type="text" id="modeloAndroid" placeholder="Ex: Galaxy S21, Redmi Note 12">
+          <input type="text" id="modeloAndroid" list="modelosSamsung" placeholder="Ex: Galaxy S21, Redmi Note 12">
+          <datalist id="modelosSamsung">
+            <option value="Galaxy A05"></option>
+            <option value="Galaxy A15"></option>
+            <option value="Galaxy A25"></option>
+            <option value="Galaxy A35"></option>
+            <option value="Galaxy A55"></option>
+            <option value="Galaxy S21"></option>
+            <option value="Galaxy S22"></option>
+            <option value="Galaxy S23"></option>
+            <option value="Galaxy S24"></option>
+            <option value="Galaxy S23 Ultra"></option>
+            <option value="Galaxy S24 Ultra"></option>
+            <option value="Galaxy M14"></option>
+            <option value="Galaxy M34"></option>
+          </datalist>
+          <datalist id="modelosXiaomi">
+            <option value="Redmi 12"></option>
+            <option value="Redmi 13C"></option>
+            <option value="Redmi Note 12"></option>
+            <option value="Redmi Note 13"></option>
+            <option value="Redmi Note 13 Pro"></option>
+            <option value="Poco X5"></option>
+            <option value="Poco X6"></option>
+            <option value="Poco M6"></option>
+            <option value="Xiaomi 12"></option>
+            <option value="Xiaomi 13"></option>
+          </datalist>
+          <datalist id="modelosMotorola">
+            <option value="Moto G23"></option>
+            <option value="Moto G34"></option>
+            <option value="Moto G53"></option>
+            <option value="Moto G54"></option>
+            <option value="Moto G73"></option>
+            <option value="Moto G84"></option>
+            <option value="Moto G Play"></option>
+            <option value="Moto G Stylus"></option>
+            <option value="Moto Edge 40"></option>
+            <option value="Moto Edge 50"></option>
+          </datalist>
         </div>
       </div>
 

@@ -149,6 +149,18 @@ function setTipo(tipo) {
   document.getElementById('tempo').value = '';
   document.getElementById('outroProblema').value = '';
   verificarTempo();
+  if (tipo === 'android') atualizarListaModelos();
+}
+
+function atualizarListaModelos() {
+  const marca = document.getElementById('marca').value;
+  const listasPorMarca = { Samsung: 'modelosSamsung', Xiaomi: 'modelosXiaomi', Motorola: 'modelosMotorola' };
+  const input = document.getElementById('modeloAndroid');
+  if (listasPorMarca[marca]) {
+    input.setAttribute('list', listasPorMarca[marca]);
+  } else {
+    input.removeAttribute('list');
+  }
 }
 
 function renderProblemas(lista) {
