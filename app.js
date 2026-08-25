@@ -112,7 +112,10 @@ const PROBLEMAS_COM_TEMPO = ['Não liga','sinal','Wi-Fi','Face ID','Touch ID','m
 function animarContador() {
   const el = document.getElementById('contador');
   let n = CONTADOR_BASE - 20;
+  let valorReal = null; // preenchido quando a busca no Supabase responder
+
   const iv = setInterval(() => {
+    if (valorReal !== null) { el.textContent = valorReal; clearInterval(iv); return; }
     n += 2;
     el.textContent = n;
     if (n >= CONTADOR_BASE) { el.textContent = CONTADOR_BASE; clearInterval(iv); }
@@ -128,8 +131,8 @@ function animarContador() {
     }
   }).then(r => {
     const total = parseInt(r.headers.get('content-range')?.split('/')[1] || '0');
-    const exibir = CONTADOR_BASE + total;
-    el.textContent = exibir;
+    valorReal = CONTADOR_BASE + total;
+    el.textContent = valorReal; // cobre o caso da animacao ja ter terminado
   }).catch(() => {});
 }
 animarContador();
